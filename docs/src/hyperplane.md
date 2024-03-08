@@ -9,7 +9,7 @@ implementing multiple automated market maker (AMM) curves.
 
 | Network | Version | Program Address | Fee Owner Address |
 | --- | --- | --- |
-| Devnet, Testnet | 3.0.0 | `SwapsVeCiPHMUAtzQWZw7RjsKjgCjhwU55QGu4U1Szw` | Any |
+| Devnet, Testnet | 3.0.0 | `RaRe29KoKtQcZLoJfeZzzke1KnuVgFV6Lt6Hnjw2QTh` | Any |
 | All | 2.0.0 | `SwaPpA9LAaLfeLi3a68M4DjnLqgtticKg6CnyNwgAC8` | `HfoTxFR1Tm6kGmWgYWD6J7YHVy1UwqSULUGVLXkJqaKN` |
 
 The Token Swap Program was deployed to all networks by the Serum team at
@@ -19,7 +19,7 @@ in the middle of 2021. Though that program still exists, it is not actively
 maintained.
 
 For devnet and testnet, please use the maintained deployment at
-`SwapsVeCiPHMUAtzQWZw7RjsKjgCjhwU55QGu4U1Szw`, and for mainnet, please use any
+`RaRe29KoKtQcZLoJfeZzzke1KnuVgFV6Lt6Hnjw2QTh`, and for mainnet, please use any
 other AMM project on Solana. Almost all of these were based on Token Swap!
 
 Check out

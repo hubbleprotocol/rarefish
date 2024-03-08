@@ -13,6 +13,6 @@ set -x
 
 # Build/test all host crates
 cargo +"$rust_stable" build --workspace
-cargo +"$rust_stable" test --workspace -- --nocapture
+RUST_LOG=fatal cargo +"$rust_stable" test --workspace -- --nocapture
 
 exit 0

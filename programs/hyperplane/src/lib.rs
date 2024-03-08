@@ -18,7 +18,7 @@ use anchor_lang::prelude::*;
 use curve::fees::Fees;
 pub use instructions::*;
 
-declare_id!("SwapsVeCiPHMUAtzQWZw7RjsKjgCjhwU55QGu4U1Szw");
+declare_id!("RaRe29KoKtQcZLoJfeZzzke1KnuVgFV6Lt6Hnjw2QTh");
 
 #[program]
 pub mod hyperplane {
