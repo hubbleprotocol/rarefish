@@ -260,8 +260,8 @@ pub struct InitializePool<'info> {
     // )]
     // pub admin_pool_token_ata: Box<InterfaceAccount<'info, TokenAccount>>,
 
-    // pub system_program: Program<'info, System>,
-    // pub rent: Sysvar<'info, Rent>,
+    pub system_program: Program<'info, System>,
+    pub rent: Sysvar<'info, Rent>,
     // /// The token program for the pool token mint
     // pub pool_token_program: Interface<'info, TokenInterface>,
     // /// The token program for the token A mint
