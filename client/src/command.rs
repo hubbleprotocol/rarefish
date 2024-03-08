@@ -3,6 +3,8 @@ use std::{path::PathBuf, str::FromStr};
 use anchor_client::{
     anchor_lang::prelude::Pubkey,
     solana_sdk::{
+        compute_budget::ComputeBudgetInstruction,
+        native_token::sol_to_lamports,
         program_pack::Pack,
         signature::{Keypair, Signer},
     },
@@ -26,6 +28,11 @@ use crate::{
     client::HyperplaneClient, configs::PoolConfigValue, model::InitializePoolConfig, send_tx,
 };
 
+pub fn get_sol_fee_for_cu(sol_to_pay: f64, cu_used: u64) -> u64 {
+    let sol_lamports = sol_to_lamports(sol_to_pay);
+    sol_lamports * 1_000_000 / cu_used
+}
+
 pub async fn create_ata<T: AsyncClient, S: Signer>(
     hyperplane: &HyperplaneClient<T, S>,
     owner: Pubkey,
@@ -35,16 +42,18 @@ pub async fn create_ata<T: AsyncClient, S: Signer>(
 
     let address = ata::get_associated_token_address(&owner, &mint);
 
-    let builder =
-        hyperplane
-            .client
-            .tx_builder()
-            .add_ix(instruction::create_associated_token_account(
-                &hyperplane.client.payer().unwrap().pubkey(),
-                &owner,
-                &mint,
-                &spl_token::id(),
-            ));
+    let builder = hyperplane
+        .client
+        .tx_builder()
+        .add_ix(ComputeBudgetInstruction::set_compute_unit_price(
+            get_sol_fee_for_cu(0.0005, 200_000),
+        ))
+        .add_ix(instruction::create_associated_token_account(
+            &hyperplane.client.payer().unwrap().pubkey(),
+            &owner,
+            &mint,
+            &spl_token::id(),
+        ));
 
     send_tx!(hyperplane, builder, []);
 

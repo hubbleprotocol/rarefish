@@ -143,21 +143,21 @@ where
                 pool: pool_kp.pubkey(),
                 swap_curve: curve,
                 pool_authority: authority,
-                token_a_mint,
-                token_b_mint,
-                token_a_vault,
-                token_b_vault,
-                pool_token_mint,
-                token_a_fees_vault,
-                token_b_fees_vault,
-                admin_token_a_ata,
-                admin_token_b_ata,
-                admin_pool_token_ata: admin_pool_token_ata.pubkey(),
-                system_program: System::id(),
-                rent: Rent::id(),
-                pool_token_program,
-                token_a_token_program,
-                token_b_token_program,
+                // token_a_mint,
+                // token_b_mint,
+                // token_a_vault,
+                // token_b_vault,
+                // pool_token_mint,
+                // token_a_fees_vault,
+                // token_b_fees_vault,
+                // admin_token_a_ata,
+                // admin_token_b_ata,
+                // admin_pool_token_ata: admin_pool_token_ata.pubkey(),
+                // system_program: System::id(),
+                // rent: Rent::id(),
+                // pool_token_program,
+                // token_a_token_program,
+                // token_b_token_program,
             },
             hyperplane::instruction::InitializePool {
                 initial_supply_a,
@@ -170,7 +170,7 @@ where
         if self.config.multisig {
             send_tx!(self, tx, []);
         } else {
-            send_tx!(self, tx, [&pool_kp, &admin_pool_token_ata]);
+            send_tx!(self, tx, []);
         }
 
         Ok(pool_kp.pubkey())

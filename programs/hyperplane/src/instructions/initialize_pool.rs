@@ -41,96 +41,99 @@ pub fn handler_initialize_pool(
     fees: Fees,
     initial_supply: InitialSupply,
 ) -> Result<()> {
+    msg!("First line");
+    return Err(error!(SwapError::RepeatedMint));
     let InitialSupply {
         initial_supply_a,
         initial_supply_b,
     } = initial_supply;
 
-    let curve_parameters = curve_parameters.to_curve_params(
-        ctx.accounts.token_a_mint.decimals,
-        ctx.accounts.token_b_mint.decimals,
-    );
+    // let curve_parameters = Box::new(curve_parameters.to_curve_params(
+    //     ctx.accounts.token_a_mint.decimals,
+    //     ctx.accounts.token_b_mint.decimals,
+    // ));
+    // msg!("Curve params {:?}", curve_parameters);
 
-    let swap_curve = SwapCurve::new_from_params(curve_parameters)?;
+    // let swap_curve = Box::new(SwapCurve::new_from_params(*curve_parameters)?);
 
-    msg!(
-        "Initialize parameters: swap_curve={:?}, initial_supply_a={}, initial_supply_b={}",
-        swap_curve,
-        initial_supply_a,
-        initial_supply_b
-    );
+    // msg!(
+    //     "Initialize parameters: swap_curve={:?}, initial_supply_a={}, initial_supply_b={}",
+    //     swap_curve,
+    //     initial_supply_a,
+    //     initial_supply_b
+    // );
 
-    swap_curve
-        .calculator
-        .validate_supply(initial_supply_a, initial_supply_b)?;
+    // swap_curve
+    //     .calculator
+    //     .validate_supply(initial_supply_a, initial_supply_b)?;
 
-    let swap_constraints = &SWAP_CONSTRAINTS;
+    // let swap_constraints = &SWAP_CONSTRAINTS;
 
-    if let Some(swap_constraints) = swap_constraints {
-        // swap_constraints.validate_admin(ctx.accounts.admin.key)?;
-        swap_constraints.validate_curve(&swap_curve)?;
-        swap_constraints.validate_fees(&fees)?;
-        swap_constraints.validate_token_2022_trading_token_extensions(
-            &ctx.accounts.token_a_mint.to_account_info(),
-        )?;
-        swap_constraints.validate_token_2022_trading_token_extensions(
-            &ctx.accounts.token_b_mint.to_account_info(),
-        )?;
-    }
-    fees.validate()?;
-    swap_curve.calculator.validate()?;
+    // if let Some(swap_constraints) = swap_constraints {
+    //     // swap_constraints.validate_admin(ctx.accounts.admin.key)?;
+    //     swap_constraints.validate_curve(&swap_curve)?;
+    //     swap_constraints.validate_fees(&fees)?;
+    //     swap_constraints.validate_token_2022_trading_token_extensions(
+    //         &ctx.accounts.token_a_mint.to_account_info(),
+    //     )?;
+    //     swap_constraints.validate_token_2022_trading_token_extensions(
+    //         &ctx.accounts.token_b_mint.to_account_info(),
+    //     )?;
+    // }
+    // fees.validate()?;
+    // swap_curve.calculator.validate()?;
 
-    let initial_amount = swap_curve.calculator.new_pool_supply();
-    let pool_authority_bump = ctx.bumps.pool_authority;
+    // let initial_amount = swap_curve.calculator.new_pool_supply();
+    // let pool_authority_bump = ctx.bumps.pool_authority;
 
-    let pool = &mut ctx.accounts.pool.load_init()?;
-    pool.admin = ctx.accounts.admin.key();
-    pool.pool_authority_bump_seed = u64::try_from(pool_authority_bump).unwrap();
-    pool.pool_authority = ctx.accounts.pool_authority.key();
-    pool.token_a_vault = ctx.accounts.token_a_vault.key();
-    pool.token_b_vault = ctx.accounts.token_b_vault.key();
-    pool.pool_token_mint = ctx.accounts.pool_token_mint.key();
-    pool.token_a_mint = ctx.accounts.token_a_mint.key();
-    pool.token_b_mint = ctx.accounts.token_b_mint.key();
-    pool.token_a_fees_vault = ctx.accounts.token_a_fees_vault.key();
-    pool.token_b_fees_vault = ctx.accounts.token_b_fees_vault.key();
-    pool.fees = fees;
-    pool.curve_type = swap_curve.curve_type.into();
-    pool.swap_curve = ctx.accounts.swap_curve.key();
+    // let pool = &mut ctx.accounts.pool.load_init()?;
+    // pool.admin = ctx.accounts.admin.key();
+    // pool.pool_authority_bump_seed = u64::try_from(pool_authority_bump).unwrap();
+    // pool.pool_authority = ctx.accounts.pool_authority.key();
+    // pool.token_a_vault = ctx.accounts.token_a_vault.key();
+    // pool.token_b_vault = ctx.accounts.token_b_vault.key();
+    // pool.pool_token_mint = ctx.accounts.pool_token_mint.key();
+    // pool.token_a_mint = ctx.accounts.token_a_mint.key();
+    // pool.token_b_mint = ctx.accounts.token_b_mint.key();
+    // pool.token_a_fees_vault = ctx.accounts.token_a_fees_vault.key();
+    // pool.token_b_fees_vault = ctx.accounts.token_b_fees_vault.key();
+    // pool.fees = fees;
+    // pool.curve_type = swap_curve.curve_type.into();
+    // pool.swap_curve = ctx.accounts.swap_curve.key();
 
-    swap_token::transfer_from_user(
-        ctx.accounts.token_a_token_program.to_account_info(),
-        ctx.accounts.admin_token_a_ata.to_account_info(),
-        ctx.accounts.token_a_mint.to_account_info(),
-        ctx.accounts.token_a_vault.to_account_info(),
-        ctx.accounts.admin.to_account_info(),
-        initial_supply_a,
-        ctx.accounts.token_a_mint.decimals,
-    )?;
-    swap_token::transfer_from_user(
-        ctx.accounts.token_b_token_program.to_account_info(),
-        ctx.accounts.admin_token_b_ata.to_account_info(),
-        ctx.accounts.token_b_mint.to_account_info(),
-        ctx.accounts.token_b_vault.to_account_info(),
-        ctx.accounts.admin.to_account_info(),
-        initial_supply_b,
-        ctx.accounts.token_b_mint.decimals,
-    )?;
+    // swap_token::transfer_from_user(
+    //     ctx.accounts.token_a_token_program.to_account_info(),
+    //     ctx.accounts.admin_token_a_ata.to_account_info(),
+    //     ctx.accounts.token_a_mint.to_account_info(),
+    //     ctx.accounts.token_a_vault.to_account_info(),
+    //     ctx.accounts.admin.to_account_info(),
+    //     initial_supply_a,
+    //     ctx.accounts.token_a_mint.decimals,
+    // )?;
+    // swap_token::transfer_from_user(
+    //     ctx.accounts.token_b_token_program.to_account_info(),
+    //     ctx.accounts.admin_token_b_ata.to_account_info(),
+    //     ctx.accounts.token_b_mint.to_account_info(),
+    //     ctx.accounts.token_b_vault.to_account_info(),
+    //     ctx.accounts.admin.to_account_info(),
+    //     initial_supply_b,
+    //     ctx.accounts.token_b_mint.decimals,
+    // )?;
 
-    pool_token::mint(
-        ctx.accounts.pool_token_program.to_account_info(),
-        ctx.accounts.pool.to_account_info(),
-        ctx.accounts.pool_token_mint.to_account_info(),
-        ctx.accounts.pool_authority.to_account_info(),
-        pool_authority_bump,
-        ctx.accounts.admin_pool_token_ata.to_account_info(),
-        to_u64!(initial_amount)?,
-    )?;
+    // pool_token::mint(
+    //     ctx.accounts.pool_token_program.to_account_info(),
+    //     ctx.accounts.pool.to_account_info(),
+    //     ctx.accounts.pool_token_mint.to_account_info(),
+    //     ctx.accounts.pool_authority.to_account_info(),
+    //     pool_authority_bump,
+    //     ctx.accounts.admin_pool_token_ata.to_account_info(),
+    //     to_u64!(initial_amount)?,
+    // )?;
 
-    // Serialize the curve with a layout that is specific to the curve type
-    swap_curve
-        .calculator
-        .try_dyn_serialize(ctx.accounts.swap_curve.try_borrow_mut_data()?)?;
+    // // Serialize the curve with a layout that is specific to the curve type
+    // swap_curve
+    //     .calculator
+    //     .try_dyn_serialize(ctx.accounts.swap_curve.try_borrow_mut_data()?)?;
 
     Ok(())
 }
@@ -159,112 +162,112 @@ pub struct InitializePool<'info> {
     )]
     pub pool_authority: AccountInfo<'info>,
 
-    // todo - elliot - should we block if mint has freeze authority?
-    // todo - elliot - token 2022 - should we block if mint has close authority?
-    /// Token A mint
-    // note - constraint repeated for clarity
-    #[account(
-        constraint = token_a_mint.key() != token_b_mint.key() @ SwapError::RepeatedMint,
-        mint::token_program = token_a_token_program,
-    )]
-    pub token_a_mint: Box<InterfaceAccount<'info, Mint>>,
+    // // todo - elliot - should we block if mint has freeze authority?
+    // // todo - elliot - token 2022 - should we block if mint has close authority?
+    // /// Token A mint
+    // // note - constraint repeated for clarity
+    // #[account(
+    //     constraint = token_a_mint.key() != token_b_mint.key() @ SwapError::RepeatedMint,
+    //     mint::token_program = token_a_token_program,
+    // )]
+    // pub token_a_mint: Box<InterfaceAccount<'info, Mint>>,
 
-    // todo - elliot - should we block if mint has freeze authority?
-    // todo - elliot - token 2022 - should we block if mint has close authority?
-    /// Token B mint
-    // note - constraint repeated for clarity
-    #[account(
-        constraint = token_a_mint.key() != token_b_mint.key() @ SwapError::RepeatedMint,
-        mint::token_program = token_b_token_program,
-    )]
-    pub token_b_mint: Box<InterfaceAccount<'info, Mint>>,
+    // // todo - elliot - should we block if mint has freeze authority?
+    // // todo - elliot - token 2022 - should we block if mint has close authority?
+    // /// Token B mint
+    // // note - constraint repeated for clarity
+    // #[account(
+    //     constraint = token_a_mint.key() != token_b_mint.key() @ SwapError::RepeatedMint,
+    //     mint::token_program = token_b_token_program,
+    // )]
+    // pub token_b_mint: Box<InterfaceAccount<'info, Mint>>,
 
-    #[account(init,
-        seeds = [seeds::TOKEN_A_VAULT, pool.key().as_ref(), token_a_mint.key().as_ref()],
-        bump,
-        payer = admin,
-        token::mint = token_a_mint,
-        token::authority = pool_authority,
-        token::token_program = token_a_token_program,
-    )]
-    pub token_a_vault: Box<InterfaceAccount<'info, TokenAccount>>,
+    // #[account(init,
+    //     seeds = [seeds::TOKEN_A_VAULT, pool.key().as_ref(), token_a_mint.key().as_ref()],
+    //     bump,
+    //     payer = admin,
+    //     token::mint = token_a_mint,
+    //     token::authority = pool_authority,
+    //     token::token_program = token_a_token_program,
+    // )]
+    // pub token_a_vault: Box<InterfaceAccount<'info, TokenAccount>>,
 
-    #[account(init,
-        seeds = [seeds::TOKEN_B_VAULT, pool.key().as_ref(), token_b_mint.key().as_ref()],
-        bump,
-        payer = admin,
-        token::mint = token_b_mint,
-        token::authority = pool_authority,
-        token::token_program = token_b_token_program,
-    )]
-    pub token_b_vault: Box<InterfaceAccount<'info, TokenAccount>>,
+    // #[account(init,
+    //     seeds = [seeds::TOKEN_B_VAULT, pool.key().as_ref(), token_b_mint.key().as_ref()],
+    //     bump,
+    //     payer = admin,
+    //     token::mint = token_b_mint,
+    //     token::authority = pool_authority,
+    //     token::token_program = token_b_token_program,
+    // )]
+    // pub token_b_vault: Box<InterfaceAccount<'info, TokenAccount>>,
 
-    // todo - elliot - set no close authority, immutable? Should be default?
-    #[account(init,
-        seeds=[seeds::POOL_TOKEN_MINT, pool.key().as_ref()],
-        bump,
-        payer = admin,
-        mint::decimals = 6,
-        mint::authority = pool_authority,
-        mint::token_program = pool_token_program,
-    )]
-    pub pool_token_mint: Box<InterfaceAccount<'info, Mint>>,
+    // // todo - elliot - set no close authority, immutable? Should be default?
+    // #[account(init,
+    //     seeds=[seeds::POOL_TOKEN_MINT, pool.key().as_ref()],
+    //     bump,
+    //     payer = admin,
+    //     mint::decimals = 6,
+    //     mint::authority = pool_authority,
+    //     mint::token_program = pool_token_program,
+    // )]
+    // pub pool_token_mint: Box<InterfaceAccount<'info, Mint>>,
 
-    /// Token account to collect trading token a fees into - designated to the pool admin authority
-    #[account(init,
-        seeds=[seeds::TOKEN_A_FEES_VAULT, pool.key().as_ref(), token_a_mint.key().as_ref()],
-        bump,
-        payer = admin,
-        token::mint = token_a_mint,
-        token::authority = pool_authority,
-        token::token_program = token_a_token_program,
-    )]
-    pub token_a_fees_vault: Box<InterfaceAccount<'info, TokenAccount>>,
+    // /// Token account to collect trading token a fees into - designated to the pool admin authority
+    // #[account(init,
+    //     seeds=[seeds::TOKEN_A_FEES_VAULT, pool.key().as_ref(), token_a_mint.key().as_ref()],
+    //     bump,
+    //     payer = admin,
+    //     token::mint = token_a_mint,
+    //     token::authority = pool_authority,
+    //     token::token_program = token_a_token_program,
+    // )]
+    // pub token_a_fees_vault: Box<InterfaceAccount<'info, TokenAccount>>,
 
-    /// Token account to collect trading token b fees into - designated to the pool admin authority
-    #[account(init,
-        seeds=[seeds::TOKEN_B_FEES_VAULT, pool.key().as_ref(), token_b_mint.key().as_ref()],
-        bump,
-        payer = admin,
-        token::mint = token_b_mint,
-        token::authority = pool_authority,
-        token::token_program = token_b_token_program,
-    )]
-    pub token_b_fees_vault: Box<InterfaceAccount<'info, TokenAccount>>,
+    // /// Token account to collect trading token b fees into - designated to the pool admin authority
+    // #[account(init,
+    //     seeds=[seeds::TOKEN_B_FEES_VAULT, pool.key().as_ref(), token_b_mint.key().as_ref()],
+    //     bump,
+    //     payer = admin,
+    //     token::mint = token_b_mint,
+    //     token::authority = pool_authority,
+    //     token::token_program = token_b_token_program,
+    // )]
+    // pub token_b_fees_vault: Box<InterfaceAccount<'info, TokenAccount>>,
 
-    /// Admin authority's token A account to deposit initial liquidity from
-    #[account(mut,
-        token::mint = token_a_mint,
-        token::authority = admin,
-        token::token_program = token_a_token_program,
-    )]
-    pub admin_token_a_ata: Box<InterfaceAccount<'info, TokenAccount>>,
+    // /// Admin authority's token A account to deposit initial liquidity from
+    // #[account(mut,
+    //     token::mint = token_a_mint,
+    //     token::authority = admin,
+    //     token::token_program = token_a_token_program,
+    // )]
+    // pub admin_token_a_ata: Box<InterfaceAccount<'info, TokenAccount>>,
 
-    /// Admin authority's token B account to deposit initial liquidity from
-    #[account(mut,
-        token::mint = token_b_mint,
-        token::authority = admin,
-        token::token_program = token_b_token_program,
-    )]
-    pub admin_token_b_ata: Box<InterfaceAccount<'info, TokenAccount>>,
+    // /// Admin authority's token B account to deposit initial liquidity from
+    // #[account(mut,
+    //     token::mint = token_b_mint,
+    //     token::authority = admin,
+    //     token::token_program = token_b_token_program,
+    // )]
+    // pub admin_token_b_ata: Box<InterfaceAccount<'info, TokenAccount>>,
 
-    /// Admin authority's pool token account to deposit the initially minted pool tokens into
-    #[account(init,
-        payer = admin,
-        token::mint = pool_token_mint,
-        token::authority = admin,
-        token::token_program = pool_token_program,
-    )]
-    pub admin_pool_token_ata: Box<InterfaceAccount<'info, TokenAccount>>,
+    // /// Admin authority's pool token account to deposit the initially minted pool tokens into
+    // #[account(init,
+    //     payer = admin,
+    //     token::mint = pool_token_mint,
+    //     token::authority = admin,
+    //     token::token_program = pool_token_program,
+    // )]
+    // pub admin_pool_token_ata: Box<InterfaceAccount<'info, TokenAccount>>,
 
-    pub system_program: Program<'info, System>,
-    pub rent: Sysvar<'info, Rent>,
-    /// The token program for the pool token mint
-    pub pool_token_program: Interface<'info, TokenInterface>,
-    /// The token program for the token A mint
-    pub token_a_token_program: Interface<'info, TokenInterface>,
-    /// The token program for the token B mint
-    pub token_b_token_program: Interface<'info, TokenInterface>,
+    // pub system_program: Program<'info, System>,
+    // pub rent: Sysvar<'info, Rent>,
+    // /// The token program for the pool token mint
+    // pub pool_token_program: Interface<'info, TokenInterface>,
+    // /// The token program for the token A mint
+    // pub token_a_token_program: Interface<'info, TokenInterface>,
+    // /// The token program for the token B mint
+    // pub token_b_token_program: Interface<'info, TokenInterface>,
 }
 
 pub mod model {
