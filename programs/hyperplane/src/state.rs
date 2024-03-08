@@ -116,7 +116,7 @@ impl Default for SwapPool {
 
 impl SwapPool {
     // note: also hardcoded in /js/src/util/const.ts
-    pub const LEN: usize = DISCRIMINATOR_SIZE + 1032; // 8 + 1032 = 1040
+    pub const LEN: usize = DISCRIMINATOR_SIZE + 4504; // 8 + 4504 = 4512
 }
 
 impl SwapState for SwapPool {
