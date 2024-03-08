@@ -1,5 +1,3 @@
-#![allow(clippy::integer_arithmetic)]
-
 /// An off-chain implementation of the stable swap invariant
 ///
 /// Differences from smart contract impl:

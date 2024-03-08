@@ -20,7 +20,7 @@ use crate::{
 };
 
 // todo - elliot token2022 transfer fees
-pub fn handler(
+pub fn handler_withdraw(
     ctx: Context<Withdraw>,
     pool_token_amount: u64,
     minimum_token_a_amount: u64,

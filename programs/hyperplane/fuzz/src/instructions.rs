@@ -1,5 +1,3 @@
-#![allow(clippy::integer_arithmetic)]
-
 use std::collections::{HashMap, HashSet};
 
 use arbitrary::Arbitrary;
@@ -336,7 +334,7 @@ fn run_fuzz_instruction(
                 || e == TokenError::OwnerMismatch.into())
             {
                 println!("Fuzzer returned error - {e:?} - {fuzz_instruction:?}");
-                Err(e).unwrap()
+                panic!("{:?}", e)
             }
         })
         .ok();

@@ -16,7 +16,7 @@ use crate::{
     require_msg,
     state::StableCurve,
     try_math,
-    utils::math::{AbsDiff, TryMath, TryNew},
+    utils::math::{TryMath, TryNew},
 };
 
 const N_COINS: u8 = 2;

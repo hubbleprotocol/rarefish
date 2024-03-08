@@ -15,7 +15,7 @@ use crate::{
     withdraw_fees::utils::validate_inputs,
 };
 
-pub fn handler(
+pub fn handler_withdraw_fees(
     ctx: Context<WithdrawFees>,
     requested_withdraw_amount: u64,
 ) -> Result<event::WithdrawFees> {

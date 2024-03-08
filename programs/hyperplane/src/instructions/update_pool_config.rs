@@ -7,7 +7,7 @@ use crate::{
 
 pub const VALUE_BYTE_ARRAY_LEN: usize = 32;
 
-pub fn handler(
+pub fn handler_update_pool_config(
     ctx: Context<UpdatePoolConfig>,
     mode: u16,
     value: &[u8; VALUE_BYTE_ARRAY_LEN],

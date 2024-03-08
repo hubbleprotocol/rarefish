@@ -673,7 +673,7 @@ pub fn do_process_instruction_with_fee_constraints(
     // approximate the logic in the actual runtime which runs the instruction
     // and only updates accounts if the instruction is successful
     let mut account_clones = accounts.iter().map(|x| (*x).clone()).collect::<Vec<_>>();
-    let mut account_infos = instruction
+    let account_infos = instruction
         .accounts
         .iter()
         .zip(account_clones.iter_mut())
