@@ -1,3 +1,4 @@
+#![allow(clippy::arithmetic_side_effects)]
 use anchor_lang::prelude::*;
 
 use crate::{
