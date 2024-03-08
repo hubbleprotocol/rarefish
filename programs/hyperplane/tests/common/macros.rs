@@ -6,15 +6,15 @@
 macro_rules! send_tx {
     ($ctx:expr, $instr:ident, $($signer:expr),*) => {{
         use solana_sdk::signature::Signer;
+        let hash = $ctx.context
+                .get_new_latest_blockhash()
+                .await
+                .unwrap();
         let transaction = ::solana_sdk::transaction::Transaction::new_signed_with_payer(
             &$instr,
             Some(&$ctx.context.payer.pubkey()),
             &[&$ctx.context.payer $(, $signer)*],
-            $ctx.context
-                .banks_client
-                .get_latest_blockhash()
-                .await
-                .unwrap(),
+            hash,
         );
         $ctx.context
             .banks_client
@@ -26,15 +26,15 @@ macro_rules! send_tx {
     }};
     ($ctx:expr, [$($instr:expr),*], $($signer:expr),*) => {{
         use solana_sdk::signature::Signer;
+        let hash = $ctx.context
+                .get_new_latest_blockhash()
+                .await
+                .unwrap();
         let transaction = ::solana_sdk::transaction::Transaction::new_signed_with_payer(
             &[$($instr),*],
             Some(&$ctx.context.payer.pubkey()),
             &[&$ctx.context.payer $(, $signer)*],
-            $ctx.context
-                .banks_client
-                .get_latest_blockhash()
-                .await
-                .unwrap(),
+            hash
         );
         $ctx.context
             .banks_client
