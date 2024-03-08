@@ -1,0 +1,19 @@
+{
+    "token_a_mint": "So11111111111111111111111111111111111111112",
+    "token_b_mint": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+    "curve": "ConstantProduct",
+    "fees": {
+	"trade_fee_numerator": 1,
+	"trade_fee_denominator": 100,
+	"owner_trade_fee_numerator": 1,
+	"owner_trade_fee_denominator": 100,
+	"owner_withdraw_fee_numerator": 1,
+	"owner_withdraw_fee_denominator": 1000,
+	"host_fee_numerator": 0,
+	"host_fee_denominator": 1000
+    },
+    "initial_supply": {
+	"initial_supply_a": 100000000,
+	"initial_supply_b": 10000000
+    }
+}
