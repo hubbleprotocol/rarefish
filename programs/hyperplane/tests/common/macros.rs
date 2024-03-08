@@ -61,7 +61,7 @@ macro_rules! hyperplane_error {
     ($err: expr) => {
         ::solana_sdk::transaction::TransactionError::InstructionError(
             0,
-            #[allow(clippy::integer_arithmetic)]
+            #[allow(clippy::arithmetic_side_effects)]
             ::solana_sdk::instruction::InstructionError::Custom(6000 + $err as u32),
         )
     };
@@ -69,7 +69,7 @@ macro_rules! hyperplane_error {
     ($err: expr, $index: expr) => {
         ::solana_sdk::transaction::TransactionError::InstructionError(
             $index,
-            #[allow(clippy::integer_arithmetic)]
+            #[allow(clippy::arithmetic_side_effects)]
             ::solana_sdk::instruction::InstructionError::Custom(6000 + $err as u32),
         )
     };

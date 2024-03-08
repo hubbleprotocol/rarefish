@@ -35,7 +35,7 @@ pub struct InitialSupply {
     pub initial_supply_b: u64,
 }
 
-pub fn handler(
+pub fn handler_initialize_pool(
     ctx: Context<InitializePool>,
     curve_parameters: CurveUserParameters,
     fees: Fees,

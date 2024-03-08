@@ -1,3 +1,5 @@
+#![allow(clippy::arithmetic_side_effects)]
+
 //! Invariant calculator with an extra offset
 
 use anchor_lang::Result;

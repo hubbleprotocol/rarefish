@@ -1,3 +1,5 @@
+#![allow(clippy::arithmetic_side_effects)]
+
 use anchor_lang::{
     accounts::{interface::Interface, interface_account::InterfaceAccount},
     prelude::*,
@@ -21,7 +23,11 @@ use crate::{
     utils::{math::TryMath, swap_token},
 };
 
-pub fn handler(ctx: Context<Swap>, amount_in: u64, minimum_amount_out: u64) -> Result<event::Swap> {
+pub fn handler_swap(
+    ctx: Context<Swap>,
+    amount_in: u64,
+    minimum_amount_out: u64,
+) -> Result<event::Swap> {
     let pool = ctx.accounts.pool.load()?;
     let trade_direction = validate_inputs(&ctx, &pool)?;
     let swap_curve = curve!(ctx.accounts.swap_curve, pool);
