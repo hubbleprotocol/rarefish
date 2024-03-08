@@ -6,6 +6,11 @@ members = [
   "programs/hyperplane/sim",
   "programs/hyperplane/viz",
 ]
+resolver = "2"
+
+[profile.release]
+overflow-checks = true
+lto = 'thin'
 
 [profile.dev]
 split-debuginfo = "unpacked"

@@ -51,10 +51,11 @@ pub fn create_token_account_with_address(
     amount: u64,
 ) -> SolanaAccount {
     let space = if *program_id == spl_token_2022::id() {
-        ExtensionType::get_account_len::<Account>(&[
+        ExtensionType::try_calculate_account_len::<Account>(&[
             ExtensionType::ImmutableOwner,
             ExtensionType::TransferFeeAmount,
         ])
+        .unwrap()
     } else {
         Account::get_packed_len()
     };
@@ -139,12 +140,14 @@ pub fn create_mint_with_address(
 ) -> SolanaAccount {
     let space = if *program_id == spl_token_2022::id() {
         if close_authority.is_some() {
-            ExtensionType::get_account_len::<Mint>(&[
+            ExtensionType::try_calculate_account_len::<Mint>(&[
                 ExtensionType::MintCloseAuthority,
                 ExtensionType::TransferFeeConfig,
             ])
+            .unwrap()
         } else {
-            ExtensionType::get_account_len::<Mint>(&[ExtensionType::TransferFeeConfig])
+            ExtensionType::try_calculate_account_len::<Mint>(&[ExtensionType::TransferFeeConfig])
+                .unwrap()
         }
     } else {
         Mint::get_packed_len()
@@ -201,7 +204,7 @@ pub fn get_token_account_space(token_program: &Pubkey, mint: &SolanaAccount) -> 
         let required_extensions =
             ExtensionType::get_required_init_account_extensions(&mint_extensions);
 
-        ExtensionType::get_account_len::<Account>(&required_extensions)
+        ExtensionType::try_calculate_account_len::<Account>(&required_extensions).unwrap()
     } else {
         anchor_spl::token::TokenAccount::LEN
     }

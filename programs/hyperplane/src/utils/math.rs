@@ -1,3 +1,5 @@
+#![allow(clippy::arithmetic_side_effects)]
+
 use anchor_lang::{error, prelude::msg, Result};
 use spl_math::{precise_number::PreciseNumber, uint::U256};
 

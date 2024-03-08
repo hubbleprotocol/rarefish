@@ -1,3 +1,5 @@
+#![allow(clippy::arithmetic_side_effects)]
+
 //! Simple constant price swap curve, set at init
 
 use anchor_lang::{require, Result};
@@ -389,7 +391,6 @@ mod tests {
         ) {
             let curve = ConstantPriceCurve { token_b_price: token_b_price as u64, ..Default::default() };
             let pool_token_amount = pool_token_amount as u128;
-            let pool_token_supply = pool_token_supply;
             let swap_token_a_amount = swap_token_a_amount as u128;
             let swap_token_b_amount = swap_token_b_amount as u128;
             let token_b_price = token_b_price as u128;

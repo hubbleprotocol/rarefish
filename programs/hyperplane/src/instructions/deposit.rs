@@ -16,7 +16,7 @@ use crate::{
     utils::{pool_token, swap_token},
 };
 
-pub fn handler(
+pub fn handler_deposit(
     ctx: Context<Deposit>,
     pool_token_amount: u64,
     maximum_token_a_amount: u64,

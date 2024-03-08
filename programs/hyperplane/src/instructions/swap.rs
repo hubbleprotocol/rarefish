@@ -1,3 +1,5 @@
+#![allow(clippy::arithmetic_side_effects)]
+
 use anchor_lang::{
     accounts::{interface::Interface, interface_account::InterfaceAccount},
     prelude::*,
@@ -21,7 +23,11 @@ use crate::{
     utils::{math::TryMath, swap_token},
 };
 
-pub fn handler(ctx: Context<Swap>, amount_in: u64, minimum_amount_out: u64) -> Result<event::Swap> {
+pub fn handler_swap(
+    ctx: Context<Swap>,
+    amount_in: u64,
+    minimum_amount_out: u64,
+) -> Result<event::Swap> {
     let pool = ctx.accounts.pool.load()?;
     let trade_direction = validate_inputs(&ctx, &pool)?;
     let swap_curve = curve!(ctx.accounts.swap_curve, pool);
@@ -455,12 +461,12 @@ mod utils {
         use anchor_lang::solana_program::{clock::Epoch, program_option::COption, pubkey::Pubkey};
         use anchor_spl::token_2022::{
             spl_token_2022,
-            spl_token_2022::{
-                extension::{transfer_fee::TransferFee, ExtensionType, StateWithExtensionsMut},
-                pod::OptionalNonZeroPubkey,
+            spl_token_2022::extension::{
+                transfer_fee::TransferFee, ExtensionType, StateWithExtensionsMut,
             },
         };
         use proptest::{prop_assume, proptest};
+        use spl_pod::optional_keys::OptionalNonZeroPubkey;
 
         use super::*;
         use crate::instructions::test::runner::syscall_stubs::test_syscall_stubs;
@@ -1073,9 +1079,10 @@ mod utils {
         fn mint_with_fee_data() -> Vec<u8> {
             vec![
                 0;
-                ExtensionType::get_account_len::<spl_token_2022::state::Mint>(&[
+                ExtensionType::try_calculate_account_len::<spl_token_2022::state::Mint>(&[
                     ExtensionType::TransferFeeConfig
                 ])
+                .unwrap()
             ]
         }
     }

@@ -1,3 +1,5 @@
+#![allow(clippy::arithmetic_side_effects)]
+
 use solana_program::{program_option::COption, program_pack::Pack, pubkey::Pubkey};
 use spl_token_2022::{
     extension::{BaseStateWithExtensions, ExtensionType, StateWithExtensions},

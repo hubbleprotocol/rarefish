@@ -32,14 +32,14 @@
     "build": "tsc -p tsconfig.json && tsc-esm -p tsconfig.json && tsc -p tsconfig.cjs.json",
     "postbuild": "echo '{\"type\":\"commonjs\"}' > dist/cjs/package.json && echo '{\"type\":\"module\"}' > dist/esm/package.json",
     "test": "ts-node test/main.ts",
-    "start-with-test-validator": "start-server-and-test 'solana-test-validator --bpf-program TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb ../deps/token_2022.so --bpf-program SwapsVeCiPHMUAtzQWZw7RjsKjgCjhwU55QGu4U1Szw ../target/deploy/hyperplane.so --reset --quiet' http://localhost:8899/health test",
+    "start-with-test-validator": "start-server-and-test 'solana-test-validator --bpf-program TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb ../deps/token_2022.so --bpf-program RaRe29KoKtQcZLoJfeZzzke1KnuVgFV6Lt6Hnjw2QTh ../target/deploy/hyperplane.so --reset --quiet' http://localhost:8899/health test",
     "lint": "yarn pretty && eslint --max-warnings 0 .",
     "lint:fix": "yarn pretty:fix && eslint . --fix",
     "build:program": "anchor build",
     "pretty": "prettier --check '{,???/**/}*.ts'",
     "pretty:fix": "prettier --write '{,???/**/}*.ts'",
     "anchor-client-gen:clean": "rm -rf src/_generated",
-    "anchor-client-gen:mainnet": "anchor-client-gen ../target/idl/hyperplane.json src/_generated/hyperplane-client --program-id SwapsVeCiPHMUAtzQWZw7RjsKjgCjhwU55QGu4U1Szw"
+    "anchor-client-gen:mainnet": "anchor-client-gen ../target/idl/hyperplane.json src/_generated/hyperplane-client --program-id RaRe29KoKtQcZLoJfeZzzke1KnuVgFV6Lt6Hnjw2QTh"
   },
   "keywords": [],
   "dependencies": {

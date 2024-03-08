@@ -48,7 +48,7 @@ pub trait SwapState {
 /// Program states
 
 #[account(zero_copy)]
-#[derive(Debug, Default, PartialEq)]
+#[derive(Debug, PartialEq)]
 pub struct SwapPool {
     /// Pool admin - account which initialised the pool
     pub admin: Pubkey,
@@ -89,12 +89,34 @@ pub struct SwapPool {
     /// The swap curve is in withdraw mode, and will only allow withdrawals
     pub withdrawals_only: u64,
 
-    pub _padding: [u64; 16],
+    pub _padding: [u64; 512],
+}
+
+impl Default for SwapPool {
+    fn default() -> Self {
+        Self {
+            admin: Pubkey::default(),
+            pool_authority: Pubkey::default(),
+            pool_authority_bump_seed: 0,
+            token_a_vault: Pubkey::default(),
+            token_b_vault: Pubkey::default(),
+            pool_token_mint: Pubkey::default(),
+            token_a_mint: Pubkey::default(),
+            token_b_mint: Pubkey::default(),
+            token_a_fees_vault: Pubkey::default(),
+            token_b_fees_vault: Pubkey::default(),
+            fees: Fees::default(),
+            curve_type: 0,
+            swap_curve: Pubkey::default(),
+            withdrawals_only: 0,
+            _padding: [0; 512],
+        }
+    }
 }
 
 impl SwapPool {
     // note: also hardcoded in /js/src/util/const.ts
-    pub const LEN: usize = DISCRIMINATOR_SIZE + 536; // 8 + 536 = 548
+    pub const LEN: usize = DISCRIMINATOR_SIZE + 4504; // 8 + 4504 = 4512
 }
 
 impl SwapState for SwapPool {
