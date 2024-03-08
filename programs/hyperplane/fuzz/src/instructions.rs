@@ -1,3 +1,5 @@
+#![allow(clippy::arithmetic_side_effects)]
+
 use std::collections::{HashMap, HashSet};
 
 use arbitrary::Arbitrary;

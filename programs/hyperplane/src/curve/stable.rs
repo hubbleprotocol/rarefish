@@ -1,3 +1,5 @@
+#![allow(clippy::arithmetic_side_effects)]
+
 //! The stableswap invariant calculator.
 use std::convert::TryFrom;
 

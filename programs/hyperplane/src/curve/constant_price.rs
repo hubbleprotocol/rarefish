@@ -1,3 +1,5 @@
+#![allow(clippy::arithmetic_side_effects)]
+
 //! Simple constant price swap curve, set at init
 
 use anchor_lang::{require, Result};

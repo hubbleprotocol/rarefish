@@ -1,3 +1,5 @@
+#![allow(clippy::arithmetic_side_effects)]
+
 use anchor_lang::prelude::Pubkey;
 use anchor_spl::token_2022::{
     spl_token_2022,

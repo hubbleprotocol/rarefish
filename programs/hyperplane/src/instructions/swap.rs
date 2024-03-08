@@ -1,3 +1,5 @@
+#![allow(clippy::arithmetic_side_effects)]
+
 use anchor_lang::{
     accounts::{interface::Interface, interface_account::InterfaceAccount},
     prelude::*,

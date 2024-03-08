@@ -1,3 +1,5 @@
+#![allow(clippy::arithmetic_side_effects)]
+
 use anchor_lang::{error::ErrorCode as AnchorError, prelude::*};
 use anchor_spl::{
     token::spl_token,
