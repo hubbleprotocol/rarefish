@@ -42,12 +42,12 @@ pub fn handler_initialize_pool(
     initial_supply: InitialSupply,
 ) -> Result<()> {
     msg!("First line");
-    return Err(error!(SwapError::RepeatedMint));
     let InitialSupply {
         initial_supply_a,
         initial_supply_b,
     } = initial_supply;
 
+    return Err(SwapError::UnsupportedCurveOperation.into());
     // let curve_parameters = Box::new(curve_parameters.to_curve_params(
     //     ctx.accounts.token_a_mint.decimals,
     //     ctx.accounts.token_b_mint.decimals,
@@ -162,58 +162,58 @@ pub struct InitializePool<'info> {
     )]
     pub pool_authority: AccountInfo<'info>,
 
-    // // todo - elliot - should we block if mint has freeze authority?
-    // // todo - elliot - token 2022 - should we block if mint has close authority?
-    // /// Token A mint
-    // // note - constraint repeated for clarity
-    // #[account(
-    //     constraint = token_a_mint.key() != token_b_mint.key() @ SwapError::RepeatedMint,
-    //     mint::token_program = token_a_token_program,
-    // )]
-    // pub token_a_mint: Box<InterfaceAccount<'info, Mint>>,
+    // todo - elliot - should we block if mint has freeze authority?
+    // todo - elliot - token 2022 - should we block if mint has close authority?
+    /// Token A mint
+    // note - constraint repeated for clarity
+    #[account(
+        constraint = token_a_mint.key() != token_b_mint.key() @ SwapError::RepeatedMint,
+        mint::token_program = token_a_token_program,
+    )]
+    pub token_a_mint: Box<InterfaceAccount<'info, Mint>>,
 
-    // // todo - elliot - should we block if mint has freeze authority?
-    // // todo - elliot - token 2022 - should we block if mint has close authority?
-    // /// Token B mint
-    // // note - constraint repeated for clarity
-    // #[account(
-    //     constraint = token_a_mint.key() != token_b_mint.key() @ SwapError::RepeatedMint,
-    //     mint::token_program = token_b_token_program,
-    // )]
-    // pub token_b_mint: Box<InterfaceAccount<'info, Mint>>,
+    // todo - elliot - should we block if mint has freeze authority?
+    // todo - elliot - token 2022 - should we block if mint has close authority?
+    /// Token B mint
+    // note - constraint repeated for clarity
+    #[account(
+        constraint = token_a_mint.key() != token_b_mint.key() @ SwapError::RepeatedMint,
+        mint::token_program = token_b_token_program,
+    )]
+    pub token_b_mint: Box<InterfaceAccount<'info, Mint>>,
 
-    // #[account(init,
-    //     seeds = [seeds::TOKEN_A_VAULT, pool.key().as_ref(), token_a_mint.key().as_ref()],
-    //     bump,
-    //     payer = admin,
-    //     token::mint = token_a_mint,
-    //     token::authority = pool_authority,
-    //     token::token_program = token_a_token_program,
-    // )]
-    // pub token_a_vault: Box<InterfaceAccount<'info, TokenAccount>>,
+    #[account(init,
+        seeds = [seeds::TOKEN_A_VAULT, pool.key().as_ref(), token_a_mint.key().as_ref()],
+        bump,
+        payer = admin,
+        token::mint = token_a_mint,
+        token::authority = pool_authority,
+        token::token_program = token_a_token_program,
+    )]
+    pub token_a_vault: Box<InterfaceAccount<'info, TokenAccount>>,
 
-    // #[account(init,
-    //     seeds = [seeds::TOKEN_B_VAULT, pool.key().as_ref(), token_b_mint.key().as_ref()],
-    //     bump,
-    //     payer = admin,
-    //     token::mint = token_b_mint,
-    //     token::authority = pool_authority,
-    //     token::token_program = token_b_token_program,
-    // )]
-    // pub token_b_vault: Box<InterfaceAccount<'info, TokenAccount>>,
+    #[account(init,
+        seeds = [seeds::TOKEN_B_VAULT, pool.key().as_ref(), token_b_mint.key().as_ref()],
+        bump,
+        payer = admin,
+        token::mint = token_b_mint,
+        token::authority = pool_authority,
+        token::token_program = token_b_token_program,
+    )]
+    pub token_b_vault: Box<InterfaceAccount<'info, TokenAccount>>,
 
-    // // todo - elliot - set no close authority, immutable? Should be default?
-    // #[account(init,
-    //     seeds=[seeds::POOL_TOKEN_MINT, pool.key().as_ref()],
-    //     bump,
-    //     payer = admin,
-    //     mint::decimals = 6,
-    //     mint::authority = pool_authority,
-    //     mint::token_program = pool_token_program,
-    // )]
-    // pub pool_token_mint: Box<InterfaceAccount<'info, Mint>>,
+    // todo - elliot - set no close authority, immutable? Should be default?
+    #[account(init,
+        seeds=[seeds::POOL_TOKEN_MINT, pool.key().as_ref()],
+        bump,
+        payer = admin,
+        mint::decimals = 6,
+        mint::authority = pool_authority,
+        mint::token_program = pool_token_program,
+    )]
+    pub pool_token_mint: Box<InterfaceAccount<'info, Mint>>,
 
-    // /// Token account to collect trading token a fees into - designated to the pool admin authority
+    // Token account to collect trading token a fees into - designated to the pool admin authority
     // #[account(init,
     //     seeds=[seeds::TOKEN_A_FEES_VAULT, pool.key().as_ref(), token_a_mint.key().as_ref()],
     //     bump,
@@ -235,39 +235,40 @@ pub struct InitializePool<'info> {
     // )]
     // pub token_b_fees_vault: Box<InterfaceAccount<'info, TokenAccount>>,
 
-    // /// Admin authority's token A account to deposit initial liquidity from
-    // #[account(mut,
-    //     token::mint = token_a_mint,
-    //     token::authority = admin,
-    //     token::token_program = token_a_token_program,
-    // )]
+    // Admin authority's token A account to deposit initial liquidity from
+    #[account(mut,
+        token::mint = token_a_mint,
+        token::authority = admin,
+        token::token_program = token_a_token_program,
+    )]
+    pub admin_token_a_ata: Box<InterfaceAccount<'info, TokenAccount>>,
+
     // pub admin_token_a_ata: Box<InterfaceAccount<'info, TokenAccount>>,
 
-    // /// Admin authority's token B account to deposit initial liquidity from
-    // #[account(mut,
-    //     token::mint = token_b_mint,
-    //     token::authority = admin,
-    //     token::token_program = token_b_token_program,
-    // )]
-    // pub admin_token_b_ata: Box<InterfaceAccount<'info, TokenAccount>>,
+    // Admin authority's token B account to deposit initial liquidity from
+    #[account(mut,
+        token::mint = token_b_mint,
+        token::authority = admin,
+        token::token_program = token_b_token_program,
+    )]
+    pub admin_token_b_ata: Box<InterfaceAccount<'info, TokenAccount>>,
 
-    // /// Admin authority's pool token account to deposit the initially minted pool tokens into
-    // #[account(init,
-    //     payer = admin,
-    //     token::mint = pool_token_mint,
-    //     token::authority = admin,
-    //     token::token_program = pool_token_program,
-    // )]
-    // pub admin_pool_token_ata: Box<InterfaceAccount<'info, TokenAccount>>,
-
+    /// Admin authority's pool token account to deposit the initially minted pool tokens into
+    #[account(init,
+        payer = admin,
+        token::mint = pool_token_mint,
+        token::authority = admin,
+        token::token_program = pool_token_program,
+    )]
+    pub admin_pool_token_ata: Box<InterfaceAccount<'info, TokenAccount>>,
     pub system_program: Program<'info, System>,
     pub rent: Sysvar<'info, Rent>,
-    // /// The token program for the pool token mint
-    // pub pool_token_program: Interface<'info, TokenInterface>,
-    // /// The token program for the token A mint
-    // pub token_a_token_program: Interface<'info, TokenInterface>,
-    // /// The token program for the token B mint
-    // pub token_b_token_program: Interface<'info, TokenInterface>,
+    /// The token program for the pool token mint
+    pub pool_token_program: Interface<'info, TokenInterface>,
+    /// The token program for the token A mint
+    pub token_a_token_program: Interface<'info, TokenInterface>,
+    /// The token program for the token B mint
+    pub token_b_token_program: Interface<'info, TokenInterface>,
 }
 
 pub mod model {

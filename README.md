@@ -15,6 +15,15 @@
 [ci-docs-url]: https://github.com/hubbleprotocol/hyperplane/actions/workflows/pull-request-docs.yml?query=branch%3Amaster
 [ci-docs-image]: https://github.com/hubbleprotocol/hyperplane/actions/workflows/pull-request-docs.yml/badge.svg?query=branch%3Amaster
 
+# Steps to debug:
+- get the program and owner private keys from bitwarden
+  - Admin: https://vault.bitwarden.com/#/vault?search=rare&itemId=d5dd41b1-72be-4817-9463-b12d00b585fa
+  - Program: https://vault.bitwarden.com/#/vault?search=rare&itemId=63f22861-ab0d-4e09-95ed-b12d00b5caa3
+- in `target` folder add a `hyperplane-keypair.json` file with the program private key
+- build the program `SWAP_PROGRAM_OWNER_FEE_ADDRESS=fiSha8e7EDkbxrWwfnTXGu7YQh9n4C52AHnEBBNEEYE cargo build-sbf --features=production  `
+- deploy the program `anchor deploy --provider.wallet keys/mainnet/owner.json --provider.cluster <RPC>`
+- run the client to initialize the pool `cargo run -p hyperplane-client -- --url https://hubble-dedi.rpcpool.com/bb4c4a4764b89f0a7d765a6abaf2 --keypair keys/mainnet/owner.json init-pool --config client/pool-config.json`
+
 # Solana Program Library
 
 The Solana Program Library (SPL) is a collection of on-chain programs targeting
