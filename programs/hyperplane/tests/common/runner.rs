@@ -8,7 +8,7 @@ pub fn program(dependencies: &[ProgramDependency]) -> ProgramTest {
     let program_test = ProgramTest::new(
         "hyperplane",
         hyperplane::ID,
-        anchor_processor!(hyperplane::entry),
+        None
     );
 
     dependencies
