@@ -5,7 +5,7 @@ use anchor_lang::{
         *,
     },
 };
-use anchor_spl::token_interface::{Mint, TokenAccount, TokenInterface};
+use anchor_spl::{token_interface::{Mint, TokenAccount, TokenInterface}, token::Token, associated_token::AssociatedToken};
 use derive_more::Constructor;
 #[cfg(feature = "serde")]
 use serde;
@@ -252,18 +252,20 @@ pub struct InitializePool<'info> {
     pub admin_token_b_ata: Box<InterfaceAccount<'info, TokenAccount>>,
 
     /// Admin authority's pool token account to deposit the initially minted pool tokens into
-    #[account(init,
+    #[account(
+        init,
         payer = admin,
-        token::mint = pool_token_mint,
-        token::authority = admin,
-        token::token_program = pool_token_program,
+        associated_token::mint = pool_token_mint,
+        associated_token::authority = admin,
+        associated_token::token_program = pool_token_program
     )]
-    pub admin_pool_token_ata: Box<InterfaceAccount<'info, TokenAccount>>,
-
+    pub admin_pool_token_ata: InterfaceAccount<'info, TokenAccount>,
+    
     pub system_program: Program<'info, System>,
     pub rent: Sysvar<'info, Rent>,
     /// The token program for the pool token mint
-    pub pool_token_program: Interface<'info, TokenInterface>,
+    pub pool_token_program: Program<'info, Token>,
+    pub associated_token_program: Program<'info, AssociatedToken>,
     /// The token program for the token A mint
     pub token_a_token_program: Interface<'info, TokenInterface>,
     /// The token program for the token B mint

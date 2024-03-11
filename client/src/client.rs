@@ -6,7 +6,7 @@ use anchor_client::{
         sysvar::SysvarId,
     },
 };
-use anchor_spl::token::TokenAccount;
+use anchor_spl::{token::TokenAccount, associated_token::AssociatedToken};
 use anyhow::Result;
 use hyperplane::{
     ix::{Initialize, UpdatePoolConfig},
@@ -158,6 +158,7 @@ where
                 pool_token_program,
                 token_a_token_program,
                 token_b_token_program,
+                associated_token_program: AssociatedToken::id(),
             },
             hyperplane::instruction::InitializePool {
                 initial_supply_a,
@@ -170,7 +171,7 @@ where
         if self.config.multisig {
             send_tx!(self, tx, []);
         } else {
-            send_tx!(self, tx, []);
+            send_tx!(self, tx, [&pool_kp]);
         }
 
         Ok(pool_kp.pubkey())
