@@ -6,7 +6,7 @@ use anchor_client::{
         sysvar::SysvarId,
     },
 };
-use anchor_spl::{token::TokenAccount, associated_token::AssociatedToken};
+use anchor_spl::{associated_token::AssociatedToken, token::TokenAccount};
 use anyhow::Result;
 use hyperplane::{
     ix::{Initialize, UpdatePoolConfig},
@@ -71,10 +71,8 @@ where
         }: Initialize,
     ) -> Result<Pubkey> {
         let pool_kp = Keypair::new();
-        let admin_pool_token_ata = Keypair::new();
 
         info!("Pool: {}", pool_kp.pubkey());
-        info!("Admin pool token ATA: {}", admin_pool_token_ata.pubkey());
 
         let a_ata = self.client.client.get_account(&admin_token_a_ata).await?;
         let token_a_token_program = a_ata.owner;
@@ -104,6 +102,9 @@ where
             &token_a_mint,
             &token_b_mint,
         );
+        let admin_pool_token_ata =
+            anchor_spl::associated_token::get_associated_token_address(&admin, &pool_token_mint);
+        info!("Admin pool token ATA: {}", admin_pool_token_ata);
 
         let mut tx = self.client.tx_builder().add_ix(
             // Account for the swap pool, zero copy
@@ -113,27 +114,47 @@ where
         );
 
         let pool_token_program = spl_token::id();
+        // let (token_a_vault, _token_a_vault_bump_seed) =
+        //     hyperplane::utils::seeds::pda::token_a_vault_pda(&pool_kp.pubkey(), &token_a_mint);
+        // tx = tx.add_ix(
+        //     self.client
+        //         .create_account_ix(
+        //             &token_a_vault,
+        //             TokenAccount::LEN,
+        //             &token_a_token_program,
+        //         )
+        //         .await?,
+        // );
+        // tx = tx.add_ix(
+        //     spl_token::instruction::initialize_account3(
+        //         &token_a_token_program,
+        //         &token_a_vault,
+        //         &token_a_mint,
+        //         &authority,
+        //     )
+        //     .unwrap(),
+        // );
 
         if self.config.multisig {
             // Allocate space and assign to token program for the admin pool token account
             // This is required because multisig does not support additional signers
             // Cannot fully init the token account as the mint does not exist yet
-            tx = tx.add_ix(
-                self.client
-                    .create_account_ix(
-                        &admin_pool_token_ata.pubkey(),
-                        TokenAccount::LEN,
-                        &pool_token_program,
-                    )
-                    .await?,
-            );
-            info!(
-                "Sending non-multisig txs to allocate for space pool account: {} and admin pool token ATA: {}",
-                pool_kp.pubkey(),
-                admin_pool_token_ata.pubkey()
-            );
-            send_tx!(self, tx, [&pool_kp, &admin_pool_token_ata]);
-            tx = self.client.tx_builder();
+            // tx = tx.add_ix(
+            //     self.client
+            //         .create_account_ix(
+            //             &admin_pool_token_ata.pubkey(),
+            //             TokenAccount::LEN,
+            //             &pool_token_program,
+            //         )
+            //         .await?,
+            // );
+            // info!(
+            //     "Sending non-multisig txs to allocate for space pool account: {} and admin pool token ATA: {}",
+            //     pool_kp.pubkey(),
+            //     admin_pool_token_ata.pubkey()
+            // );
+            // send_tx!(self, tx, [&pool_kp, &admin_pool_token_ata]);
+            // tx = self.client.tx_builder();
         }
 
         tx = tx.add_anchor_ix(
@@ -152,7 +173,7 @@ where
                 token_b_fees_vault,
                 admin_token_a_ata,
                 admin_token_b_ata,
-                admin_pool_token_ata: admin_pool_token_ata.pubkey(),
+                admin_pool_token_ata,
                 system_program: System::id(),
                 rent: Rent::id(),
                 pool_token_program,

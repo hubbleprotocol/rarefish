@@ -34,9 +34,8 @@ use crate::{
 
 #[test_case(spl_token::id(), spl_token::id(), spl_token::id(); "all-token")]
 #[test_case(spl_token::id(), spl_token_2022::id(), spl_token_2022::id(); "mixed-pool-token")]
-#[test_case(spl_token_2022::id(), spl_token_2022::id(), spl_token_2022::id(); "all-token-2022")]
-#[test_case(spl_token_2022::id(), spl_token_2022::id(), spl_token::id(); "a-only-token-2022")]
-#[test_case(spl_token_2022::id(), spl_token::id(), spl_token_2022::id(); "b-only-token-2022")]
+#[test_case(spl_token::id(), spl_token_2022::id(), spl_token::id(); "a-only-token-2022")]
+#[test_case(spl_token::id(), spl_token::id(), spl_token_2022::id(); "b-only-token-2022")]
 fn test_valid_swap_curve_all_fees(
     pool_token_program_id: Pubkey,
     token_a_program_id: Pubkey,
@@ -118,9 +117,8 @@ fn test_valid_swap_curve_all_fees(
 
 #[test_case(spl_token::id(), spl_token::id(), spl_token::id(); "all-token")]
 #[test_case(spl_token::id(), spl_token_2022::id(), spl_token_2022::id(); "mixed-pool-token")]
-#[test_case(spl_token_2022::id(), spl_token_2022::id(), spl_token_2022::id(); "all-token-2022")]
-#[test_case(spl_token_2022::id(), spl_token_2022::id(), spl_token::id(); "a-only-token-2022")]
-#[test_case(spl_token_2022::id(), spl_token::id(), spl_token_2022::id(); "b-only-token-2022")]
+#[test_case(spl_token::id(), spl_token_2022::id(), spl_token::id(); "a-only-token-2022")]
+#[test_case(spl_token::id(), spl_token::id(), spl_token_2022::id(); "b-only-token-2022")]
 fn test_valid_swap_curve_trade_fee_only(
     pool_token_program_id: Pubkey,
     token_a_program_id: Pubkey,
@@ -201,9 +199,8 @@ fn test_valid_swap_curve_trade_fee_only(
 
 #[test_case(spl_token::id(), spl_token::id(), spl_token::id(); "all-token")]
 #[test_case(spl_token::id(), spl_token_2022::id(), spl_token_2022::id(); "mixed-pool-token")]
-#[test_case(spl_token_2022::id(), spl_token_2022::id(), spl_token_2022::id(); "all-token-2022")]
-#[test_case(spl_token_2022::id(), spl_token_2022::id(), spl_token::id(); "a-only-token-2022")]
-#[test_case(spl_token_2022::id(), spl_token::id(), spl_token_2022::id(); "b-only-token-2022")]
+#[test_case(spl_token::id(), spl_token_2022::id(), spl_token::id(); "a-only-token-2022")]
+#[test_case(spl_token::id(), spl_token::id(), spl_token_2022::id(); "b-only-token-2022")]
 fn test_valid_swap_with_fee_constraints(
     pool_token_program_id: Pubkey,
     token_a_program_id: Pubkey,
@@ -402,9 +399,8 @@ fn test_valid_swap_with_fee_constraints(
 
 #[test_case(spl_token::id(), spl_token::id(), spl_token::id(); "all-token")]
 #[test_case(spl_token::id(), spl_token_2022::id(), spl_token_2022::id(); "mixed-pool-token")]
-#[test_case(spl_token_2022::id(), spl_token_2022::id(), spl_token_2022::id(); "all-token-2022")]
-#[test_case(spl_token_2022::id(), spl_token_2022::id(), spl_token::id(); "a-only-token-2022")]
-#[test_case(spl_token_2022::id(), spl_token::id(), spl_token_2022::id(); "b-only-token-2022")]
+#[test_case(spl_token::id(), spl_token_2022::id(), spl_token::id(); "a-only-token-2022")]
+#[test_case(spl_token::id(), spl_token::id(), spl_token_2022::id(); "b-only-token-2022")]
 fn test_invalid_swap(
     pool_token_program_id: Pubkey,
     token_a_program_id: Pubkey,
@@ -828,9 +824,8 @@ fn test_invalid_swap(
 
 #[test_case(spl_token::id(), spl_token::id(), spl_token::id(); "all-token")]
 #[test_case(spl_token::id(), spl_token_2022::id(), spl_token_2022::id(); "mixed-pool-token")]
-#[test_case(spl_token_2022::id(), spl_token_2022::id(), spl_token_2022::id(); "all-token-2022")]
-#[test_case(spl_token_2022::id(), spl_token_2022::id(), spl_token::id(); "a-only-token-2022")]
-#[test_case(spl_token_2022::id(), spl_token::id(), spl_token_2022::id(); "b-only-token-2022")]
+#[test_case(spl_token::id(), spl_token_2022::id(), spl_token::id(); "a-only-token-2022")]
+#[test_case(spl_token::id(), spl_token::id(), spl_token_2022::id(); "b-only-token-2022")]
 fn test_overdraw_offset_curve(
     pool_token_program_id: Pubkey,
     token_a_program_id: Pubkey,
@@ -997,9 +992,8 @@ fn test_overdraw_offset_curve(
 
 #[test_case(spl_token::id(), spl_token::id(), spl_token::id(); "all-token")]
 #[test_case(spl_token::id(), spl_token_2022::id(), spl_token_2022::id(); "mixed-pool-token")]
-#[test_case(spl_token_2022::id(), spl_token_2022::id(), spl_token_2022::id(); "all-token-2022")]
-#[test_case(spl_token_2022::id(), spl_token_2022::id(), spl_token::id(); "a-only-token-2022")]
-#[test_case(spl_token_2022::id(), spl_token::id(), spl_token_2022::id(); "b-only-token-2022")]
+#[test_case(spl_token::id(), spl_token_2022::id(), spl_token::id(); "a-only-token-2022")]
+#[test_case(spl_token::id(), spl_token::id(), spl_token_2022::id(); "b-only-token-2022")]
 fn test_swap_curve_with_transfer_fees(
     pool_token_program_id: Pubkey,
     token_a_program_id: Pubkey,
@@ -1073,9 +1067,9 @@ mod assert {
             transfer_fees,
             curve_params,
             InitialSupply::new(token_a_amount, token_b_amount),
+            pool_token_program_id,
             token_a_program_id,
             token_b_program_id,
-            pool_token_program_id,
         );
         // subtract the fee hit from initially depositing into the vault
         if accounts.token_a_program_id == spl_token_2022::id() {

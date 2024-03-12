@@ -152,7 +152,6 @@ pub fn initialize_pool(
         pool_token_program: *pool_token_program_id,
         token_a_token_program: *token_a_program_id,
         token_b_token_program: *token_b_program_id,
-        associated_token_program: AssociatedToken::id(),
     }
     .to_account_metas(None);
 

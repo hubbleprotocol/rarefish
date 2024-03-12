@@ -5,7 +5,11 @@ use anchor_lang::{
         *,
     },
 };
-use anchor_spl::{token_interface::{Mint, TokenAccount, TokenInterface}, token::Token, associated_token::AssociatedToken};
+use anchor_spl::{
+    associated_token::AssociatedToken,
+    token::Token,
+    token_interface::{Mint, TokenAccount, TokenInterface},
+};
 use derive_more::Constructor;
 #[cfg(feature = "serde")]
 use serde;
@@ -16,7 +20,7 @@ use crate::{
     error::SwapError,
     state::{Curve, SwapPool},
     to_u64,
-    utils::{pool_token, seeds, swap_token},
+    utils::{pool_pda::create_pool_token_account, pool_token, seeds, swap_token},
 };
 
 #[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
@@ -33,6 +37,55 @@ pub enum CurveUserParameters {
 pub struct InitialSupply {
     pub initial_supply_a: u64,
     pub initial_supply_b: u64,
+}
+
+pub fn initialize_pool_token_accounts(ctx: &Context<InitializePool>) -> Result<()> {
+    create_pool_token_account(
+        &ctx.accounts.token_a_token_program.to_account_info(),
+        &ctx.accounts.system_program.to_account_info(),
+        &ctx.accounts.admin.to_account_info(),
+        &ctx.accounts.pool.to_account_info(),
+        &ctx.accounts.token_a_mint.to_account_info(),
+        &ctx.accounts.token_a_vault,
+        seeds::pda::token_a_vault_pda_program_id,
+        seeds::TOKEN_A_VAULT,
+        &ctx.accounts.pool_authority,
+    )?;
+    create_pool_token_account(
+        &ctx.accounts.token_a_token_program.to_account_info(),
+        &ctx.accounts.system_program.to_account_info(),
+        &ctx.accounts.admin.to_account_info(),
+        &ctx.accounts.pool.to_account_info(),
+        &ctx.accounts.token_a_mint.to_account_info(),
+        &ctx.accounts.token_a_fees_vault,
+        seeds::pda::token_a_fees_vault_pda_program_id,
+        seeds::TOKEN_A_FEES_VAULT,
+        &ctx.accounts.pool_authority,
+    )?;
+
+    create_pool_token_account(
+        &ctx.accounts.token_b_token_program.to_account_info(),
+        &ctx.accounts.system_program.to_account_info(),
+        &ctx.accounts.admin.to_account_info(),
+        &ctx.accounts.pool.to_account_info(),
+        &ctx.accounts.token_b_mint.to_account_info(),
+        &ctx.accounts.token_b_vault,
+        seeds::pda::token_b_vault_pda_program_id,
+        seeds::TOKEN_B_VAULT,
+        &ctx.accounts.pool_authority,
+    )?;
+    create_pool_token_account(
+        &ctx.accounts.token_b_token_program.to_account_info(),
+        &ctx.accounts.system_program.to_account_info(),
+        &ctx.accounts.admin.to_account_info(),
+        &ctx.accounts.pool.to_account_info(),
+        &ctx.accounts.token_b_mint.to_account_info(),
+        &ctx.accounts.token_b_fees_vault,
+        seeds::pda::token_b_fees_vault_pda_program_id,
+        seeds::TOKEN_B_FEES_VAULT,
+        &ctx.accounts.pool_authority,
+    )?;
+    Ok(())
 }
 
 pub fn handler_initialize_pool(
@@ -82,6 +135,7 @@ pub fn handler_initialize_pool(
     }
     fees.validate()?;
     swap_curve.calculator.validate()?;
+    initialize_pool_token_accounts(&ctx)?;
 
     let initial_amount = swap_curve.calculator.new_pool_supply();
     let pool_authority_bump = ctx.bumps.pool_authority;
@@ -182,25 +236,17 @@ pub struct InitializePool<'info> {
     )]
     pub token_b_mint: Box<InterfaceAccount<'info, Mint>>,
 
-    #[account(init,
+    #[account(mut,
         seeds = [seeds::TOKEN_A_VAULT, pool.key().as_ref(), token_a_mint.key().as_ref()],
-        bump,
-        payer = admin,
-        token::mint = token_a_mint,
-        token::authority = pool_authority,
-        token::token_program = token_a_token_program,
+        bump
     )]
-    pub token_a_vault: Box<InterfaceAccount<'info, TokenAccount>>,
+    pub token_a_vault: AccountInfo<'info>,
 
-    #[account(init,
+    #[account(mut,
         seeds = [seeds::TOKEN_B_VAULT, pool.key().as_ref(), token_b_mint.key().as_ref()],
-        bump,
-        payer = admin,
-        token::mint = token_b_mint,
-        token::authority = pool_authority,
-        token::token_program = token_b_token_program,
+        bump
     )]
-    pub token_b_vault: Box<InterfaceAccount<'info, TokenAccount>>,
+    pub token_b_vault: AccountInfo<'info>,
 
     // todo - elliot - set no close authority, immutable? Should be default?
     #[account(init,
@@ -214,26 +260,18 @@ pub struct InitializePool<'info> {
     pub pool_token_mint: Box<InterfaceAccount<'info, Mint>>,
 
     /// Token account to collect trading token a fees into - designated to the pool admin authority
-    #[account(init,
+    #[account(mut,
         seeds=[seeds::TOKEN_A_FEES_VAULT, pool.key().as_ref(), token_a_mint.key().as_ref()],
-        bump,
-        payer = admin,
-        token::mint = token_a_mint,
-        token::authority = pool_authority,
-        token::token_program = token_a_token_program,
+        bump
     )]
-    pub token_a_fees_vault: Box<InterfaceAccount<'info, TokenAccount>>,
+    pub token_a_fees_vault: AccountInfo<'info>,
 
     /// Token account to collect trading token b fees into - designated to the pool admin authority
-    #[account(init,
+    #[account(mut,
         seeds=[seeds::TOKEN_B_FEES_VAULT, pool.key().as_ref(), token_b_mint.key().as_ref()],
-        bump,
-        payer = admin,
-        token::mint = token_b_mint,
-        token::authority = pool_authority,
-        token::token_program = token_b_token_program,
+        bump
     )]
-    pub token_b_fees_vault: Box<InterfaceAccount<'info, TokenAccount>>,
+    pub token_b_fees_vault: AccountInfo<'info>,
 
     /// Admin authority's token A account to deposit initial liquidity from
     #[account(mut,
@@ -255,17 +293,16 @@ pub struct InitializePool<'info> {
     #[account(
         init,
         payer = admin,
-        associated_token::mint = pool_token_mint,
-        associated_token::authority = admin,
-        associated_token::token_program = pool_token_program
+        token::mint = pool_token_mint,
+        token::authority = admin,
+        token::token_program = pool_token_program
     )]
-    pub admin_pool_token_ata: InterfaceAccount<'info, TokenAccount>,
-    
+    pub admin_pool_token_ata: Box<InterfaceAccount<'info, TokenAccount>>,
+
     pub system_program: Program<'info, System>,
     pub rent: Sysvar<'info, Rent>,
     /// The token program for the pool token mint
     pub pool_token_program: Program<'info, Token>,
-    pub associated_token_program: Program<'info, AssociatedToken>,
     /// The token program for the token A mint
     pub token_a_token_program: Interface<'info, TokenInterface>,
     /// The token program for the token B mint

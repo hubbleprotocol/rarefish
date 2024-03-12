@@ -2225,6 +2225,7 @@ dependencies = [
  "serde",
  "solana-program-test",
  "solana-sdk",
+ "spl-associated-token-account 2.3.0",
  "spl-math",
  "spl-pod",
  "strum 0.24.0",
