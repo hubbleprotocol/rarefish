@@ -28,6 +28,7 @@ use crate::{
     client::HyperplaneClient, configs::PoolConfigValue, model::InitializePoolConfig, send_tx,
 };
 
+#[allow(clippy::arithmetic_side_effects)]
 pub fn get_sol_fee_for_cu(sol_to_pay: f64, cu_used: u64) -> u64 {
     let sol_lamports = sol_to_lamports(sol_to_pay);
     sol_lamports * 1_000_000 / cu_used

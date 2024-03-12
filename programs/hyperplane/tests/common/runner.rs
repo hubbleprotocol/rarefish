@@ -2,7 +2,6 @@ use solana_program_test::ProgramTest;
 
 use super::types::TestContext;
 use crate::common::fixtures::ProgramDependency;
-use solana_program_test::anchor_processor;
 
 pub fn program(dependencies: &[ProgramDependency]) -> ProgramTest {
     let program_test = ProgramTest::new("hyperplane", hyperplane::ID, None);
