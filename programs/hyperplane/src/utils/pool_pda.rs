@@ -1,11 +1,10 @@
 use anchor_lang::{
-    prelude::{AccountInfo, CpiContext, InterfaceAccount, Pubkey, Rent, SolanaSysvar},
+    prelude::{AccountInfo, CpiContext, Pubkey, Rent, SolanaSysvar},
     Result, ToAccountInfo,
 };
-use anchor_spl::token::{Mint, TokenAccount};
+use anchor_spl::token::TokenAccount;
 
-use crate::utils::seeds;
-
+#[allow(clippy::too_many_arguments)]
 pub fn create_pool_token_account<'info>(
     token_program: &AccountInfo<'info>,
     system_program: &AccountInfo<'info>,
@@ -17,7 +16,7 @@ pub fn create_pool_token_account<'info>(
     token_account_seed: &[u8],
     pool_authority: &AccountInfo<'info>,
 ) -> Result<()> {
-    let token_account_bump = token_account_derive_fct(&crate::ID, &pool.key, &token_mint.key).1;
+    let token_account_bump = token_account_derive_fct(&crate::ID, pool.key, token_mint.key).1;
     let token_account_seeds = [
         token_account_seed,
         pool.key.as_ref(),
@@ -37,7 +36,7 @@ pub fn create_pool_token_account<'info>(
         ),
         lamports,
         TokenAccount::LEN as u64,
-        &token_program.key,
+        token_program.key,
     )?;
     anchor_spl::token_2022::initialize_account3(CpiContext::new_with_signer(
         token_program.clone(),

@@ -6,7 +6,6 @@ use anchor_lang::{
     },
 };
 use anchor_spl::{
-    associated_token::AssociatedToken,
     token::Token,
     token_interface::{Mint, TokenAccount, TokenInterface},
 };

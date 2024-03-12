@@ -9,7 +9,6 @@ use anchor_lang::{
     },
     Id, InstructionData, ToAccountMetas,
 };
-use anchor_spl::associated_token::AssociatedToken;
 #[cfg(feature = "fuzz")]
 use arbitrary::Arbitrary;
 use derive_more::Constructor;
