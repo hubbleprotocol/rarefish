@@ -2,7 +2,7 @@ use anchor_lang::{
     prelude::{AccountInfo, CpiContext, Pubkey, Rent, SolanaSysvar},
     Result, ToAccountInfo,
 };
-use anchor_spl::token::TokenAccount;
+use anchor_spl::token::{Mint, TokenAccount};
 
 #[allow(clippy::too_many_arguments)]
 pub fn create_pool_token_account<'info>(
@@ -24,7 +24,9 @@ pub fn create_pool_token_account<'info>(
         &[token_account_bump],
     ];
     let signer_seeds = &[&token_account_seeds[..]];
-    let lamports = Rent::get()?.minimum_balance(TokenAccount::LEN);
+    let extension_size = token_mint.data_len().saturating_sub(Mint::LEN);
+    let account_size = TokenAccount::LEN + extension_size;
+    let lamports = Rent::get()?.minimum_balance(account_size);
     anchor_lang::system_program::create_account(
         CpiContext::new_with_signer(
             system_program.clone(),
@@ -35,7 +37,7 @@ pub fn create_pool_token_account<'info>(
             signer_seeds,
         ),
         lamports,
-        TokenAccount::LEN as u64,
+        account_size as u64,
         token_program.key,
     )?;
     anchor_spl::token_2022::initialize_account3(CpiContext::new_with_signer(

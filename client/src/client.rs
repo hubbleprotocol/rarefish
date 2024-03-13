@@ -196,6 +196,7 @@ where
         Ok(pool_kp.pubkey())
     }
 
+    #[allow(clippy::too_many_arguments)]
     pub async fn swap(
         &self,
         admin: &Keypair,

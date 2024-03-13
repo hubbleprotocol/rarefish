@@ -66,7 +66,7 @@ impl std::fmt::Debug for SwapPoolPadding {
 }
 
 #[account(zero_copy)]
-#[derive(Debug, PartialEq)]
+#[derive(Default, Debug, PartialEq)]
 pub struct SwapPool {
     /// Pool admin - account which initialised the pool
     pub admin: Pubkey,
@@ -108,28 +108,6 @@ pub struct SwapPool {
     pub withdrawals_only: u64,
 
     pub _padding: SwapPoolPadding,
-}
-
-impl Default for SwapPool {
-    fn default() -> Self {
-        Self {
-            admin: Pubkey::default(),
-            pool_authority: Pubkey::default(),
-            pool_authority_bump_seed: 0,
-            token_a_vault: Pubkey::default(),
-            token_b_vault: Pubkey::default(),
-            pool_token_mint: Pubkey::default(),
-            token_a_mint: Pubkey::default(),
-            token_b_mint: Pubkey::default(),
-            token_a_fees_vault: Pubkey::default(),
-            token_b_fees_vault: Pubkey::default(),
-            fees: Fees::default(),
-            curve_type: 0,
-            swap_curve: Pubkey::default(),
-            withdrawals_only: 0,
-            _padding: SwapPoolPadding::default(),
-        }
-    }
 }
 
 impl SwapPool {
