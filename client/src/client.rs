@@ -102,9 +102,8 @@ where
             &token_a_mint,
             &token_b_mint,
         );
-        let admin_pool_token_ata =
-            anchor_spl::associated_token::get_associated_token_address(&admin, &pool_token_mint);
-        info!("Admin pool token ATA: {}", admin_pool_token_ata);
+        let admin_pool_token_ata = Keypair::new();
+        info!("Admin pool token ATA: {}", admin_pool_token_ata.pubkey());
 
         let mut tx = self.client.tx_builder().add_ix(
             // Account for the swap pool, zero copy
@@ -173,7 +172,7 @@ where
                 token_b_fees_vault,
                 admin_token_a_ata,
                 admin_token_b_ata,
-                admin_pool_token_ata,
+                admin_pool_token_ata: admin_pool_token_ata.pubkey(),
                 system_program: System::id(),
                 rent: Rent::id(),
                 pool_token_program,
@@ -191,10 +190,86 @@ where
         if self.config.multisig {
             send_tx!(self, tx, []);
         } else {
-            send_tx!(self, tx, [&pool_kp]);
+            send_tx!(self, tx, [&pool_kp, &admin_pool_token_ata]);
         }
 
         Ok(pool_kp.pubkey())
+    }
+
+    pub async fn swap(
+        &self,
+        admin: &Keypair,
+        admin_token_a_ata: Pubkey,
+        admin_token_b_ata: Pubkey,
+        pool_pubkey: Pubkey,
+        pool: &SwapPool,
+        amount_in: u64,
+        a_to_b: bool,
+    ) -> Result<()> {
+        let a_ata = self.client.client.get_account(&admin_token_a_ata).await?;
+        let token_a_token_program = a_ata.owner;
+
+        let b_ata = self.client.client.get_account(&admin_token_b_ata).await?;
+        let token_b_token_program = b_ata.owner;
+
+        let (
+            source_mint,
+            destination_mint,
+            source_vault,
+            destination_vault,
+            source_token_fees_vault,
+            source_user_ata,
+            destination_user_ata,
+        ) = if a_to_b {
+            (
+                pool.token_a_mint,
+                pool.token_b_mint,
+                pool.token_a_vault,
+                pool.token_b_vault,
+                pool.token_a_fees_vault,
+                admin_token_a_ata,
+                admin_token_b_ata,
+            )
+        } else {
+            (
+                pool.token_b_mint,
+                pool.token_a_mint,
+                pool.token_b_vault,
+                pool.token_a_vault,
+                pool.token_b_fees_vault,
+                admin_token_b_ata,
+                admin_token_a_ata,
+            )
+        };
+        let mut tx = self.client.tx_builder();
+
+        tx = tx.add_anchor_ix(
+            &self.config.program_id,
+            hyperplane::accounts::Swap {
+                signer: admin.pubkey(),
+                pool: pool_pubkey,
+                swap_curve: pool.swap_curve,
+                pool_authority: pool.pool_authority,
+                source_mint,
+                destination_mint,
+                source_vault,
+                destination_vault,
+                source_token_fees_vault,
+                source_user_ata,
+                destination_user_ata,
+                source_token_host_fees_account: None,
+                source_token_program: token_a_token_program,
+                destination_token_program: token_b_token_program,
+            },
+            hyperplane::instruction::Swap {
+                amount_in,
+                minimum_amount_out: 0,
+            },
+        );
+
+        send_tx!(self, tx, []);
+
+        Ok(())
     }
 
     pub async fn update_pool_config(

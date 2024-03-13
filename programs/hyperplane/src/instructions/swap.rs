@@ -77,7 +77,7 @@ pub fn handler_swap(
     )?;
 
     msg!(
-        "Swap result: total_source_debit_amount={}, source_amount_swapped={}, trade_fee={}, owner_fee={}, source_amount_to_vault={}, destination_amount_from_vault={}, destination_amount_post_transfer_fees={}",
+        "Swap result: total_source_debit_amount={}, source_amount_swapped={}, source_amount_to_vault={}, trade_fee={}, owner_fee={}, destination_amount_from_vault={}, destination_amount_post_transfer_fees={}",
         result.total_source_amount_swapped,
         result.source_amount_swapped,
         source_amount_to_vault,

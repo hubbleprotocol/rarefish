@@ -171,6 +171,32 @@ pub async fn initialize_pool<T: AsyncClient, S: Signer>(
     Ok(())
 }
 
+pub async fn swap<T: AsyncClient, S: Signer>(
+    hyperplane: &HyperplaneClient<T, S>,
+    admin: &Keypair,
+    pool_pubkey: Pubkey,
+    amount: u64,
+    a_to_b: bool,
+) -> Result<()> {
+    let pool: SwapPool = hyperplane.client.get_anchor_account(&pool_pubkey).await?;
+
+    let admin_token_a_ata = ata::get_associated_token_address(&admin.pubkey(), &pool.token_a_mint);
+    let admin_token_b_ata = ata::get_associated_token_address(&admin.pubkey(), &pool.token_b_mint);
+
+    hyperplane
+        .swap(
+            admin,
+            admin_token_a_ata,
+            admin_token_b_ata,
+            pool_pubkey,
+            &pool,
+            amount,
+            a_to_b,
+        )
+        .await?;
+    Ok(())
+}
+
 pub async fn update_pool<T: AsyncClient, S: Signer>(
     hyperplane: &HyperplaneClient<T, S>,
     admin: Pubkey,

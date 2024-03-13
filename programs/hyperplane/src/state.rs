@@ -48,6 +48,24 @@ pub trait SwapState {
 /// Program states
 
 #[account(zero_copy)]
+#[derive(PartialEq)]
+pub struct SwapPoolPadding {
+    pub inner: [u64; 512],
+}
+
+impl Default for SwapPoolPadding {
+    fn default() -> Self {
+        SwapPoolPadding { inner: [0; 512] }
+    }
+}
+
+impl std::fmt::Debug for SwapPoolPadding {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        f.debug_struct("SwapPoolPadding").finish()
+    }
+}
+
+#[account(zero_copy)]
 #[derive(Debug, PartialEq)]
 pub struct SwapPool {
     /// Pool admin - account which initialised the pool
@@ -89,7 +107,7 @@ pub struct SwapPool {
     /// The swap curve is in withdraw mode, and will only allow withdrawals
     pub withdrawals_only: u64,
 
-    pub _padding: [u64; 512],
+    pub _padding: SwapPoolPadding,
 }
 
 impl Default for SwapPool {
@@ -109,7 +127,7 @@ impl Default for SwapPool {
             curve_type: 0,
             swap_curve: Pubkey::default(),
             withdrawals_only: 0,
-            _padding: [0; 512],
+            _padding: SwapPoolPadding::default(),
         }
     }
 }

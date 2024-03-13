@@ -3,14 +3,14 @@
     "token_b_mint": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
     "curve": "ConstantProduct",
     "fees": {
-	"trade_fee_numerator": 1,
-	"trade_fee_denominator": 100,
-	"owner_trade_fee_numerator": 1,
-	"owner_trade_fee_denominator": 100,
-	"owner_withdraw_fee_numerator": 1,
-	"owner_withdraw_fee_denominator": 1000,
+	"trade_fee_numerator": 50,
+	"trade_fee_denominator": 10000,
+	"owner_trade_fee_numerator": 25,
+	"owner_trade_fee_denominator": 10000,
+	"owner_withdraw_fee_numerator": 0,
+	"owner_withdraw_fee_denominator": 10000,
 	"host_fee_numerator": 0,
-	"host_fee_denominator": 1000
+	"host_fee_denominator": 10000
     },
     "initial_supply": {
 	"initial_supply_a": 100000000,
