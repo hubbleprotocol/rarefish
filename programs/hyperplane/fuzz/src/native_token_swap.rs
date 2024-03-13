@@ -106,17 +106,17 @@ impl NativeTokenSwap {
         let mut pool_authority_account = create_program_account(authority);
         let mut system_program_account = create_program_account(system_program::id());
         let mut rent = create_sysvar_account(&Rent::default());
-        let mut pool_token_program_account = create_program_account(spl_token_2022::id());
+        let mut pool_token_program_account = create_program_account(spl_token::id());
         let mut token_b_program_account = create_program_account(spl_token::id());
         let mut token_a_program_account = create_program_account(spl_token::id());
         let mut pool_token_mint_account = NativeAccountData::new_with_key(
             pool_token_mint,
-            spl_token_2022::state::Mint::LEN,
-            spl_token_2022::id(),
+            spl_token::state::Mint::LEN,
+            spl_token::id(),
         );
 
         let mut admin_authority_pool_token_ata =
-            NativeAccountData::new(spl_token_2022::state::Account::LEN, spl_token_2022::id());
+            NativeAccountData::new(spl_token::state::Account::LEN, spl_token::id());
 
         let mut token_a_vault_account = NativeAccountData::new_with_key(
             token_a_vault,
