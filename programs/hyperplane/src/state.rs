@@ -47,7 +47,7 @@ pub trait SwapState {
 
 /// Program states
 
-#[account(zero_copy)]
+#[zero_copy]
 #[derive(PartialEq)]
 pub struct SwapPoolPadding {
     pub inner: [u64; 512],
