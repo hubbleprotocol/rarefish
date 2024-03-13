@@ -235,12 +235,14 @@ pub struct InitializePool<'info> {
     )]
     pub token_b_mint: Box<InterfaceAccount<'info, Mint>>,
 
+    /// CHECK: seeds check this
     #[account(mut,
         seeds = [seeds::TOKEN_A_VAULT, pool.key().as_ref(), token_a_mint.key().as_ref()],
         bump
     )]
     pub token_a_vault: AccountInfo<'info>,
 
+    /// CHECK: seeds check this
     #[account(mut,
         seeds = [seeds::TOKEN_B_VAULT, pool.key().as_ref(), token_b_mint.key().as_ref()],
         bump
@@ -259,6 +261,7 @@ pub struct InitializePool<'info> {
     pub pool_token_mint: Box<InterfaceAccount<'info, Mint>>,
 
     /// Token account to collect trading token a fees into - designated to the pool admin authority
+    /// CHECK: seeds check this
     #[account(mut,
         seeds=[seeds::TOKEN_A_FEES_VAULT, pool.key().as_ref(), token_a_mint.key().as_ref()],
         bump
@@ -266,6 +269,7 @@ pub struct InitializePool<'info> {
     pub token_a_fees_vault: AccountInfo<'info>,
 
     /// Token account to collect trading token b fees into - designated to the pool admin authority
+    /// CHECK: seeds check this
     #[account(mut,
         seeds=[seeds::TOKEN_B_FEES_VAULT, pool.key().as_ref(), token_b_mint.key().as_ref()],
         bump
