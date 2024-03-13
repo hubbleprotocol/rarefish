@@ -25,7 +25,7 @@ pub fn create_pool_token_account<'info>(
     ];
     let signer_seeds = &[&token_account_seeds[..]];
     let extension_size = token_mint.data_len().saturating_sub(Mint::LEN);
-    let account_size = TokenAccount::LEN + extension_size;
+    let account_size = TokenAccount::LEN.checked_add(extension_size).unwrap();
     let lamports = Rent::get()?.minimum_balance(account_size);
     anchor_lang::system_program::create_account(
         CpiContext::new_with_signer(
