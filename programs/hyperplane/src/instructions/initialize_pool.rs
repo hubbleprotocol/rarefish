@@ -93,8 +93,6 @@ pub fn handler_initialize_pool(
     fees: Fees,
     initial_supply: InitialSupply,
 ) -> Result<()> {
-    msg!("First line");
-    // return Err(error!(SwapError::RepeatedMint));
     let InitialSupply {
         initial_supply_a,
         initial_supply_b,

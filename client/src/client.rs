@@ -113,48 +113,6 @@ where
         );
 
         let pool_token_program = spl_token::id();
-        // let (token_a_vault, _token_a_vault_bump_seed) =
-        //     hyperplane::utils::seeds::pda::token_a_vault_pda(&pool_kp.pubkey(), &token_a_mint);
-        // tx = tx.add_ix(
-        //     self.client
-        //         .create_account_ix(
-        //             &token_a_vault,
-        //             TokenAccount::LEN,
-        //             &token_a_token_program,
-        //         )
-        //         .await?,
-        // );
-        // tx = tx.add_ix(
-        //     spl_token::instruction::initialize_account3(
-        //         &token_a_token_program,
-        //         &token_a_vault,
-        //         &token_a_mint,
-        //         &authority,
-        //     )
-        //     .unwrap(),
-        // );
-
-        if self.config.multisig {
-            // Allocate space and assign to token program for the admin pool token account
-            // This is required because multisig does not support additional signers
-            // Cannot fully init the token account as the mint does not exist yet
-            // tx = tx.add_ix(
-            //     self.client
-            //         .create_account_ix(
-            //             &admin_pool_token_ata.pubkey(),
-            //             TokenAccount::LEN,
-            //             &pool_token_program,
-            //         )
-            //         .await?,
-            // );
-            // info!(
-            //     "Sending non-multisig txs to allocate for space pool account: {} and admin pool token ATA: {}",
-            //     pool_kp.pubkey(),
-            //     admin_pool_token_ata.pubkey()
-            // );
-            // send_tx!(self, tx, [&pool_kp, &admin_pool_token_ata]);
-            // tx = self.client.tx_builder();
-        }
 
         tx = tx.add_anchor_ix(
             &self.config.program_id,
