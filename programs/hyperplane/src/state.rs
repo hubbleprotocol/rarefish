@@ -50,12 +50,12 @@ pub trait SwapState {
 #[zero_copy]
 #[derive(PartialEq)]
 pub struct SwapPoolPadding {
-    pub inner: [u64; 512],
+    pub inner: [u64; 448],
 }
 
 impl Default for SwapPoolPadding {
     fn default() -> Self {
-        SwapPoolPadding { inner: [0; 512] }
+        SwapPoolPadding { inner: [0; 448] }
     }
 }
 
@@ -106,6 +106,10 @@ pub struct SwapPool {
 
     /// The swap curve is in withdraw mode, and will only allow withdrawals
     pub withdrawals_only: u64,
+
+    // These can be either normal token program or token2022
+    pub token_a_program: Pubkey,
+    pub token_b_program: Pubkey,
 
     pub _padding: SwapPoolPadding,
 }

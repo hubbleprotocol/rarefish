@@ -110,7 +110,7 @@ const FEES: &Fees = &Fees {
     owner_trade_fee_denominator: 10000,
     owner_withdraw_fee_numerator: 0,
     owner_withdraw_fee_denominator: 10000,
-    host_fee_numerator: 0,
+    host_fee_numerator: 2000,
     host_fee_denominator: 10000,
 };
 #[cfg(feature = "production")]

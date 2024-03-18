@@ -148,6 +148,8 @@ pub fn handler_initialize_pool(
     pool.token_b_mint = ctx.accounts.token_b_mint.key();
     pool.token_a_fees_vault = ctx.accounts.token_a_fees_vault.key();
     pool.token_b_fees_vault = ctx.accounts.token_b_fees_vault.key();
+    pool.token_a_program = ctx.accounts.token_a_token_program.key();
+    pool.token_b_program = ctx.accounts.token_b_token_program.key();
     pool.fees = fees;
     pool.curve_type = swap_curve.curve_type.into();
     pool.swap_curve = ctx.accounts.swap_curve.key();
