@@ -50,12 +50,12 @@ pub trait SwapState {
 #[zero_copy]
 #[derive(PartialEq)]
 pub struct SwapPoolPadding {
-    pub inner: [u64; 448],
+    pub inner: [u64; 504],
 }
 
 impl Default for SwapPoolPadding {
     fn default() -> Self {
-        SwapPoolPadding { inner: [0; 448] }
+        SwapPoolPadding { inner: [0; 504] }
     }
 }
 
