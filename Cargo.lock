@@ -2208,7 +2208,7 @@ dependencies = [
  "hyperplane-sim",
  "num-derive 0.3.3",
  "num-traits",
- "num_enum 0.5.11",
+ "num_enum 0.7.2",
  "proptest",
  "rand 0.8.5",
  "roots",
