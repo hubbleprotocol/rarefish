@@ -459,14 +459,16 @@ mod utils {
     #[cfg(test)]
     mod test {
         use anchor_lang::solana_program::{clock::Epoch, program_option::COption, pubkey::Pubkey};
-        use anchor_spl::token_2022::{
-            spl_token_2022,
-            spl_token_2022::extension::{
-                transfer_fee::TransferFee, ExtensionType, StateWithExtensionsMut,
+        use anchor_spl::{
+            token_2022::{
+                spl_token_2022,
+                spl_token_2022::extension::{
+                    transfer_fee::TransferFee, ExtensionType, StateWithExtensionsMut,
+                },
             },
+            token_interface::spl_token_2022::pod::OptionalNonZeroPubkey,
         };
         use proptest::{prop_assume, proptest};
-        use spl_pod::optional_keys::OptionalNonZeroPubkey;
 
         use super::*;
         use crate::instructions::test::runner::syscall_stubs::test_syscall_stubs;
@@ -1079,10 +1081,9 @@ mod utils {
         fn mint_with_fee_data() -> Vec<u8> {
             vec![
                 0;
-                ExtensionType::try_calculate_account_len::<spl_token_2022::state::Mint>(&[
+                ExtensionType::get_account_len::<spl_token_2022::state::Mint>(&[
                     ExtensionType::TransferFeeConfig
                 ])
-                .unwrap()
             ]
         }
     }

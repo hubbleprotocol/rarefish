@@ -135,7 +135,7 @@ pub fn handler_initialize_pool(
     initialize_pool_token_accounts(&ctx)?;
 
     let initial_amount = swap_curve.calculator.new_pool_supply();
-    let pool_authority_bump = ctx.bumps.pool_authority;
+    let pool_authority_bump = *ctx.bumps.get("pool_authority").unwrap();
 
     let pool = &mut ctx.accounts.pool.load_init()?;
     pool.admin = ctx.accounts.admin.key();
