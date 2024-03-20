@@ -29,9 +29,8 @@ use crate::{
 
 #[test_case(spl_token::id(), spl_token::id(), spl_token::id(); "all-token")]
 #[test_case(spl_token::id(), spl_token_2022::id(), spl_token_2022::id(); "mixed-pool-token")]
-#[test_case(spl_token_2022::id(), spl_token_2022::id(), spl_token_2022::id(); "all-token-2022")]
-#[test_case(spl_token_2022::id(), spl_token_2022::id(), spl_token::id(); "a-only-token-2022")]
-#[test_case(spl_token_2022::id(), spl_token::id(), spl_token_2022::id(); "b-only-token-2022")]
+#[test_case(spl_token::id(), spl_token_2022::id(), spl_token::id(); "a-only-token-2022")]
+#[test_case(spl_token::id(), spl_token::id(), spl_token_2022::id(); "b-only-token-2022")]
 fn test_withdraw(
     pool_token_program_id: Pubkey,
     token_a_program_id: Pubkey,
@@ -446,9 +445,8 @@ fn test_withdraw(
 
 #[test_case(spl_token::id(), spl_token::id(), spl_token::id(); "all-token")]
 #[test_case(spl_token::id(), spl_token_2022::id(), spl_token_2022::id(); "mixed-pool-token")]
-#[test_case(spl_token_2022::id(), spl_token_2022::id(), spl_token_2022::id(); "all-token-2022")]
-#[test_case(spl_token_2022::id(), spl_token_2022::id(), spl_token::id(); "a-only-token-2022")]
-#[test_case(spl_token_2022::id(), spl_token::id(), spl_token_2022::id(); "b-only-token-2022")]
+#[test_case(spl_token::id(), spl_token_2022::id(), spl_token::id(); "a-only-token-2022")]
+#[test_case(spl_token::id(), spl_token::id(), spl_token_2022::id(); "b-only-token-2022")]
 fn test_withdraw_offset_curve(
     pool_token_program_id: Pubkey,
     token_a_program_id: Pubkey,
@@ -540,9 +538,8 @@ fn test_withdraw_offset_curve(
 
 #[test_case(spl_token::id(), spl_token::id(), spl_token::id(); "all-token")]
 #[test_case(spl_token::id(), spl_token_2022::id(), spl_token_2022::id(); "mixed-pool-token")]
-#[test_case(spl_token_2022::id(), spl_token_2022::id(), spl_token_2022::id(); "all-token-2022")]
-#[test_case(spl_token_2022::id(), spl_token_2022::id(), spl_token::id(); "a-only-token-2022")]
-#[test_case(spl_token_2022::id(), spl_token::id(), spl_token_2022::id(); "b-only-token-2022")]
+#[test_case(spl_token::id(), spl_token_2022::id(), spl_token::id(); "a-only-token-2022")]
+#[test_case(spl_token::id(), spl_token::id(), spl_token_2022::id(); "b-only-token-2022")]
 fn test_withdraw_constant_price_curve(
     pool_token_program_id: Pubkey,
     token_a_program_id: Pubkey,

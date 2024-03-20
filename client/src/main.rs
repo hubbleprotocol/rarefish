@@ -101,6 +101,15 @@ pub enum Actions {
         token_b_ata: Option<Pubkey>,
     },
     #[clap(arg_required_else_help = true)]
+    Swap {
+        #[clap(short, long, parse(try_from_str))]
+        pool: Pubkey,
+        #[clap(long, parse(try_from_str))]
+        amount: u64,
+        #[clap(long, parse(try_from_str))]
+        a_to_b: bool,
+    },
+    #[clap(arg_required_else_help = true)]
     UpdatePool {
         #[clap(short, long, parse(try_from_str))]
         pool: Pubkey,
@@ -124,20 +133,22 @@ async fn main() -> Result<()> {
 
     tracing_subscriber::fmt().compact().init();
 
-    let payer = read_keypair_file(args.keypair).expect("Keypair file not found or invalid");
+    let payer = read_keypair_file(args.keypair.clone()).expect("Keypair file not found or invalid");
     let payer_pubkey = payer.pubkey();
     let admin = args.signer.unwrap_or_else(|| payer.pubkey());
     let commitment = CommitmentConfig::confirmed();
 
     let rpc_client = RpcClient::new_with_commitment(args.url.url().to_string(), commitment);
-    let client = OrbitLink::new(
-        rpc_client,
-        Some(payer),
-        None,
-        commitment,
-        Some(payer_pubkey),
-    )
-    .unwrap();
+    let client = {
+        OrbitLink::new(
+            rpc_client,
+            Some(read_keypair_file(args.keypair).unwrap()),
+            None,
+            commitment,
+            Some(payer_pubkey),
+        )
+        .unwrap()
+    };
     let config = Config {
         program_id: args.program,
         dry_run: args.dry_run,
@@ -165,6 +176,11 @@ async fn main() -> Result<()> {
             command::initialize_pool(&hyperplane_client, admin, config, token_a_ata, token_b_ata)
                 .await
         }
+        Actions::Swap {
+            pool,
+            amount,
+            a_to_b,
+        } => command::swap(&hyperplane_client, &payer, pool, amount, a_to_b).await,
         Actions::UpdatePool { pool, mode, value } => {
             command::update_pool(&hyperplane_client, admin, pool, mode, value).await
         }

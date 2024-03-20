@@ -1,12 +1,15 @@
 #![allow(clippy::arithmetic_side_effects)]
 
 use anchor_lang::prelude::Pubkey;
-use anchor_spl::token_2022::{
-    spl_token_2022,
-    spl_token_2022::{
-        extension::{transfer_fee, transfer_fee::TransferFee, ExtensionType},
-        state::{Account, Mint},
+use anchor_spl::{
+    token_2022::{
+        spl_token_2022,
+        spl_token_2022::{
+            extension::{transfer_fee, transfer_fee::TransferFee, ExtensionType},
+            state::{Account, Mint},
+        },
     },
+    token_interface::spl_token_2022::pod::{PodU16, PodU64},
 };
 use arrayref::array_ref;
 use solana_program_test::BanksClientError;
@@ -20,7 +23,6 @@ use super::{
     types::TestContext,
 };
 use crate::{common::types::TokenSpec, send_tx};
-use spl_pod::primitives::{PodU16, PodU64};
 
 pub async fn create_token_account(
     ctx: &mut TestContext,
@@ -40,8 +42,7 @@ pub async fn create_token_account_kp(
     owner: &Pubkey,
 ) -> Result<Pubkey, BanksClientError> {
     let space = if token_program == &spl_token_2022::id() {
-        ExtensionType::try_calculate_account_len::<Account>(&[ExtensionType::TransferFeeAmount])
-            .unwrap()
+        ExtensionType::get_account_len::<Account>(&[ExtensionType::TransferFeeAmount])
     } else {
         Account::LEN
     };
@@ -80,8 +81,7 @@ pub async fn create_mint(
 ) -> Result<(), TransportError> {
     let is_transfer_fee = token_program == spl_token_2022::id() && transfer_fee_bps > 0;
     let space = if is_transfer_fee {
-        ExtensionType::try_calculate_account_len::<Mint>(&[ExtensionType::TransferFeeConfig])
-            .unwrap()
+        ExtensionType::get_account_len::<Mint>(&[ExtensionType::TransferFeeConfig])
     } else if transfer_fee_bps > 0 {
         panic!(
             "Transfer fee not supported for token program (only token-2022): {}",

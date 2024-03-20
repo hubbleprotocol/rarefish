@@ -12,7 +12,7 @@ export RUSTBACKTRACE=1
 set -x
 
 # Build/test all host crates
-cargo +"$rust_stable" build --workspace
-RUST_LOG=fatal cargo +"$rust_stable" test --workspace -- --nocapture
+RUST_LOG=fatal cargo +"$rust_stable" build --workspace
+RUST_LOG=fatal cargo +"$rust_stable" test --workspace
 
 exit 0

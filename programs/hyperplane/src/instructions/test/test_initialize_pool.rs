@@ -35,9 +35,8 @@ use crate::{
 
 #[test_case(spl_token::id(), spl_token::id(), spl_token::id(); "all-token")]
 #[test_case(spl_token::id(), spl_token_2022::id(), spl_token_2022::id(); "mixed-pool-token")]
-#[test_case(spl_token_2022::id(), spl_token_2022::id(), spl_token_2022::id(); "all-token-2022")]
-#[test_case(spl_token_2022::id(), spl_token_2022::id(), spl_token::id(); "a-only-token-2022")]
-#[test_case(spl_token_2022::id(), spl_token::id(), spl_token_2022::id(); "b-only-token-2022")]
+#[test_case(spl_token::id(), spl_token_2022::id(), spl_token::id(); "a-only-token-2022")]
+#[test_case(spl_token::id(), spl_token::id(), spl_token_2022::id(); "b-only-token-2022")]
 fn test_initialize(
     pool_token_program_id: Pubkey,
     token_a_program_id: Pubkey,

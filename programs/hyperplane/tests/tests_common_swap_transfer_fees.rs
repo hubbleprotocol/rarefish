@@ -233,7 +233,7 @@ pub async fn test_swap_b_to_a_with_a_transfer_fees() {
 }
 
 #[tokio::test]
-pub async fn test_swap_a_to_b_with_a_and_b_transfer_fees() {
+pub async fn test_swap_a_to_b_with_a_and_b_transfer_fees_vali() {
     let program = runner::program(&[]);
     let mut ctx = runner::start(program).await;
 

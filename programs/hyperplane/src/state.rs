@@ -47,8 +47,26 @@ pub trait SwapState {
 
 /// Program states
 
+#[zero_copy]
+#[derive(PartialEq)]
+pub struct SwapPoolPadding {
+    pub inner: [u64; 504],
+}
+
+impl Default for SwapPoolPadding {
+    fn default() -> Self {
+        SwapPoolPadding { inner: [0; 504] }
+    }
+}
+
+impl std::fmt::Debug for SwapPoolPadding {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        f.debug_struct("SwapPoolPadding").finish()
+    }
+}
+
 #[account(zero_copy)]
-#[derive(Debug, PartialEq)]
+#[derive(Default, Debug, PartialEq)]
 pub struct SwapPool {
     /// Pool admin - account which initialised the pool
     pub admin: Pubkey,
@@ -89,29 +107,11 @@ pub struct SwapPool {
     /// The swap curve is in withdraw mode, and will only allow withdrawals
     pub withdrawals_only: u64,
 
-    pub _padding: [u64; 512],
-}
+    // These can be either normal token program or token2022
+    pub token_a_program: Pubkey,
+    pub token_b_program: Pubkey,
 
-impl Default for SwapPool {
-    fn default() -> Self {
-        Self {
-            admin: Pubkey::default(),
-            pool_authority: Pubkey::default(),
-            pool_authority_bump_seed: 0,
-            token_a_vault: Pubkey::default(),
-            token_b_vault: Pubkey::default(),
-            pool_token_mint: Pubkey::default(),
-            token_a_mint: Pubkey::default(),
-            token_b_mint: Pubkey::default(),
-            token_a_fees_vault: Pubkey::default(),
-            token_b_fees_vault: Pubkey::default(),
-            fees: Fees::default(),
-            curve_type: 0,
-            swap_curve: Pubkey::default(),
-            withdrawals_only: 0,
-            _padding: [0; 512],
-        }
-    }
+    pub _padding: SwapPoolPadding,
 }
 
 impl SwapPool {
