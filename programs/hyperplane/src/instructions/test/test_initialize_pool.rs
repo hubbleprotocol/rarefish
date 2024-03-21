@@ -829,7 +829,7 @@ fn test_initialize(
             owner_key,
             valid_curve_types,
             fees: &fees,
-            blocked_trading_token_extensions: &[],
+            allowed_trading_token_extensions: &[],
         });
         let mut accounts = SwapAccountInfo::new(
             &user_key,

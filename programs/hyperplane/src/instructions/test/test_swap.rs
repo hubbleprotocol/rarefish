@@ -239,7 +239,7 @@ fn test_valid_swap_with_fee_constraints(
         owner_key: owner_key_str,
         valid_curve_types,
         fees: &fees,
-        blocked_trading_token_extensions: &[],
+        allowed_trading_token_extensions: &[],
     });
     let mut accounts = SwapAccountInfo::new(
         &owner_key,
@@ -683,7 +683,7 @@ fn test_invalid_swap(
             owner_key,
             valid_curve_types: &[],
             fees: &fees,
-            blocked_trading_token_extensions: &[],
+            allowed_trading_token_extensions: &[],
         });
 
         let exe = &mut SolanaAccount::default();
@@ -767,7 +767,7 @@ fn test_invalid_swap(
             owner_key,
             valid_curve_types: &[],
             fees: &fees,
-            blocked_trading_token_extensions: &[],
+            allowed_trading_token_extensions: &[],
         });
 
         let exe = &mut SolanaAccount::default();

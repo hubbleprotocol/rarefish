@@ -34,7 +34,7 @@ pub struct SwapConstraints<'a> {
     /// Valid fees
     pub fees: &'a Fees,
     /// token_2022 trading token blocked extensions
-    pub blocked_trading_token_extensions: &'a [ExtensionType],
+    pub allowed_trading_token_extensions: &'a [ExtensionType],
 }
 
 impl<'a> SwapConstraints<'a> {
@@ -92,7 +92,7 @@ impl<'a> SwapConstraints<'a> {
                 &mint_data,
             )?;
         for mint_ext in mint.get_extension_types()? {
-            if self.blocked_trading_token_extensions.contains(&mint_ext) {
+            if !self.allowed_trading_token_extensions.contains(&mint_ext) {
                 return err!(SwapError::InvalidTokenExtension);
             }
         }
@@ -110,13 +110,14 @@ const FEES: &Fees = &Fees {
     owner_trade_fee_denominator: 10000,
     owner_withdraw_fee_numerator: 0,
     owner_withdraw_fee_denominator: 10000,
-    host_fee_numerator: 2000,
+    host_fee_numerator: 0,
     host_fee_denominator: 10000,
 };
 #[cfg(feature = "production")]
 const VALID_CURVE_TYPES: &[CurveType] = &[CurveType::ConstantPrice, CurveType::ConstantProduct];
+// Disable all token22 extensions for now
 #[cfg(feature = "production")]
-const INVALID_TOKEN_2022_EXTENSIONS: &[ExtensionType] = &[ExtensionType::TransferFeeConfig];
+const VALID_TOKEN_2022_EXTENSIONS: &[ExtensionType] = &[ExtensionType::TransferFeeConfig];
 
 /// Fee structure defined by program creator in order to enforce certain
 /// fees when others use the program.  Adds checks on pool creation and
@@ -131,7 +132,7 @@ pub const SWAP_CONSTRAINTS: Option<SwapConstraints> = {
             owner_key: OWNER_KEY,
             valid_curve_types: VALID_CURVE_TYPES,
             fees: FEES,
-            blocked_trading_token_extensions: INVALID_TOKEN_2022_EXTENSIONS,
+            allowed_trading_token_extensions: VALID_TOKEN_2022_EXTENSIONS,
         })
     }
     #[cfg(not(feature = "production"))]
@@ -198,7 +199,7 @@ mod tests {
             owner_key,
             valid_curve_types: &[curve_type],
             fees: &valid_fees,
-            blocked_trading_token_extensions: &[],
+            allowed_trading_token_extensions: &[],
         };
 
         constraints.validate_curve(&swap_curve).unwrap();
@@ -269,7 +270,7 @@ mod tests {
             owner_key,
             valid_curve_types: &[],
             fees: &fees,
-            blocked_trading_token_extensions: &[],
+            allowed_trading_token_extensions: &[],
         };
 
         constraints.validate_admin(&key).unwrap();
@@ -284,7 +285,7 @@ mod tests {
             owner_key,
             valid_curve_types: &[],
             fees: &fees,
-            blocked_trading_token_extensions: &[],
+            allowed_trading_token_extensions: &[],
         };
 
         let res = constraints.validate_admin(&Pubkey::new_unique());
@@ -318,7 +319,7 @@ mod tests {
             owner_key,
             valid_curve_types: &[],
             fees: &fees,
-            blocked_trading_token_extensions: &[],
+            allowed_trading_token_extensions: &[],
         };
 
         constraints
@@ -327,7 +328,7 @@ mod tests {
     }
 
     #[test]
-    fn test_validate_trading_token_extensions_fail_when_transfer_fee_blocked() {
+    fn test_validate_trading_token_extensions_fail_when_interest_bearing_blocked() {
         test_syscall_stubs();
 
         let mut mint_data = mint_with_fee_data();
@@ -353,7 +354,7 @@ mod tests {
             owner_key,
             valid_curve_types: &[],
             fees: &fees,
-            blocked_trading_token_extensions: &[ExtensionType::TransferFeeConfig],
+            allowed_trading_token_extensions: &[ExtensionType::InterestBearingConfig],
         };
 
         let res = constraints.validate_token_2022_trading_token_extensions(&mint_info);
