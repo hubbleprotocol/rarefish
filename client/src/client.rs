@@ -1,6 +1,7 @@
 use anchor_client::{
     anchor_lang::{prelude::Pubkey, system_program::System, AccountDeserialize, Id},
     solana_sdk::{
+        compute_budget::ComputeBudgetInstruction,
         rent::Rent,
         signature::{Keypair, Signer},
         sysvar::SysvarId,
@@ -17,7 +18,7 @@ use hyperplane::{
 use orbit_link::{async_client::AsyncClient, OrbitLink};
 use tracing::info;
 
-use crate::send_tx;
+use crate::{command::get_sol_fee_for_cu, send_tx};
 
 pub struct HyperplaneClient<T: AsyncClient, S: Signer> {
     pub client: OrbitLink<T, S>,
@@ -114,6 +115,9 @@ where
 
         let pool_token_program = spl_token::id();
 
+        tx = tx.add_ix(ComputeBudgetInstruction::set_compute_unit_price(
+            get_sol_fee_for_cu(0.0005, 200_000),
+        ));
         tx = tx.add_anchor_ix(
             &self.config.program_id,
             hyperplane::accounts::InitializePool {
@@ -202,6 +206,9 @@ where
         };
         let mut tx = self.client.tx_builder();
 
+        tx = tx.add_ix(ComputeBudgetInstruction::set_compute_unit_price(
+            get_sol_fee_for_cu(0.0005, 200_000),
+        ));
         tx = tx.add_anchor_ix(
             &self.config.program_id,
             hyperplane::accounts::Swap {
@@ -238,7 +245,11 @@ where
         update: UpdatePoolConfig,
     ) -> Result<()> {
         // let swap_pool: SwapPool = self.client.get_anchor_account(&pool).await?;
-        let tx = self.client.tx_builder().add_anchor_ix(
+        let mut tx = self.client.tx_builder();
+        tx = tx.add_ix(ComputeBudgetInstruction::set_compute_unit_price(
+            get_sol_fee_for_cu(0.0005, 200_000),
+        ));
+        tx = tx.add_anchor_ix(
             &self.config.program_id,
             hyperplane::accounts::UpdatePoolConfig { admin, pool },
             hyperplane::instruction::UpdatePoolConfig::from(update),
